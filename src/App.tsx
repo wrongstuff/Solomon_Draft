@@ -10,7 +10,7 @@ import { PlayerPicks } from '@/components/PlayerPicks';
 import { ExportSection } from '@/components/ExportSection';
 import { DraftHistory } from '@/components/DraftHistory';
 // Import the image as a static asset
-const solomonChopImage = '/solomon_chop.png';
+const solomonChopImage = '/Solomon_Draft/solomon_chop.png';
 
 /**
  * Main application component that manages the overall game state
