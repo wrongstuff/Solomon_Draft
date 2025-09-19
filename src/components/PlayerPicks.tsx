@@ -96,6 +96,16 @@ export const PlayerPicks: React.FC<PlayerPicksProps> = ({ player, picks, cardSiz
 
   const colorOrder: ColorIdentity[] = ['W', 'U', 'B', 'R', 'G', 'C', 'M'];
 
+  // Calculate the maximum height needed for any column
+  const getMaxColumnHeight = () => {
+    let maxCards = 0;
+    colorOrder.forEach(colorIdentity => {
+      const cards = picks[colorIdentity] || [];
+      maxCards = Math.max(maxCards, cards.length);
+    });
+    return Math.max(12, maxCards * 2 + 10); // 2rem per card + 10rem base
+  };
+
   return (
     <div className="card bg-gray-800">
       <div className="flex justify-between items-center mb-4">
@@ -142,7 +152,9 @@ export const PlayerPicks: React.FC<PlayerPicksProps> = ({ player, picks, cardSiz
                 </span>
               </div>
               
-              <div className="relative" style={{ height: '12rem' }}>
+              <div className="relative" style={{ 
+                height: `${getMaxColumnHeight()}rem` 
+              }}>
                 {sortedCards.length > 0 ? (
                   sortedCards.map((cardInPool, index) => {
                     const isBottomCard = index === sortedCards.length - 1;
