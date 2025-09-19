@@ -1,5 +1,5 @@
 import React from 'react';
-import { CardInPool } from '@/types/card';
+import { CardInPool, Card as CardType } from '@/types/card';
 import { CardSize, getCardDimensions } from '@/constants/cardDimensions';
 
 interface CardProps {
@@ -9,6 +9,21 @@ interface CardProps {
   isSelected?: boolean;
   isDraggable?: boolean;
 }
+
+/**
+ * Gets the appropriate image URL for a card, handling both single-faced and double-faced cards
+ * @param card - The card to get the image URL for
+ * @returns The image URL for the card
+ */
+const getCardImageUrl = (card: CardType): string => {
+  // For double-faced cards, use the front face image
+  if (card.card_faces && card.card_faces.length > 0) {
+    return card.card_faces[0].image_uris?.normal || card.card_faces[0].image_uris?.small || '/placeholder-card.png';
+  }
+  
+  // For single-faced cards, use the root image_uris
+  return card.image_uris?.normal || card.image_uris?.small || '/placeholder-card.png';
+};
 
 /**
  * Component for displaying individual Magic: The Gathering cards
@@ -59,7 +74,7 @@ export const Card: React.FC<CardProps> = ({
       {/* Card Image */}
       <div className="relative w-full h-full rounded-lg overflow-hidden bg-gray-200">
         <img
-          src={card.image_uris?.normal || card.image_uris?.small || '/placeholder-card.png'}
+          src={getCardImageUrl(card)}
           alt={card.name}
           className="w-full h-full object-cover"
           onError={(e) => {

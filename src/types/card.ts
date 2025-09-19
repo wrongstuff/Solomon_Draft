@@ -5,6 +5,36 @@
  */
 
 /**
+ * Represents a card face for double-faced cards (DFC)
+ * Each face has its own properties including image URIs
+ */
+export interface CardFace {
+  /** Name of this face of the card */
+  name: string;
+  /** Mana cost for this face */
+  mana_cost: string;
+  /** Type line for this face */
+  type_line: string;
+  /** Oracle text for this face */
+  oracle_text: string;
+  /** Power (for creatures) */
+  power?: string;
+  /** Toughness (for creatures) */
+  toughness?: string;
+  /** Colors of this face */
+  colors: string[];
+  /** Image URIs for this face */
+  image_uris: {
+    small: string;
+    normal: string;
+    large: string;
+    png: string;
+    art_crop: string;
+    border_crop: string;
+  };
+}
+
+/**
  * Represents a Magic: The Gathering card with all its properties.
  * This interface matches the Scryfall API response structure.
  */
@@ -29,8 +59,8 @@ export interface Card {
   colors: string[];
   /** Color identity (colors that can be used to cast the card) */
   color_identity: string[];
-  /** Image URIs in various sizes */
-  image_uris: {
+  /** Image URIs in various sizes (for single-faced cards) */
+  image_uris?: {
     small: string;
     normal: string;
     large: string;
@@ -38,6 +68,8 @@ export interface Card {
     art_crop: string;
     border_crop: string;
   };
+  /** Card faces for double-faced cards (DFC) */
+  card_faces?: CardFace[];
   /** Rarity (common, uncommon, rare, mythic) */
   rarity: string;
   /** Set code (e.g., "MH2") */
