@@ -1,6 +1,7 @@
 import React from 'react';
 import { Pack } from '@/types/card';
 import { Card } from './Card';
+import { CardSize, getZoneHeight } from '@/constants/cardDimensions';
 
 interface PackDisplayProps {
   pack: Pack;
@@ -9,6 +10,7 @@ interface PackDisplayProps {
   pile2Cards: string[];
   onSplitPack: () => void;
   currentPhase: 'P1-split' | 'P1-choose' | 'P2-split' | 'P2-choose';
+  cardSize?: CardSize;
 }
 
 /**
@@ -22,6 +24,7 @@ export const PackDisplay: React.FC<PackDisplayProps> = ({
   pile2Cards,
   onSplitPack,
   currentPhase,
+  cardSize = 'large',
 }) => {
   const isSplittingPhase = currentPhase === 'P1-split' || currentPhase === 'P2-split';
   const allCardsAssigned = pile1Cards.length + pile2Cards.length === pack.cards.length;
@@ -101,7 +104,7 @@ export const PackDisplay: React.FC<PackDisplayProps> = ({
         {/* Pile A (Left Column) */}
         <div className="bg-green-200 p-2 flex-1 border-r border-black">
           <h3 className="text-sm font-medium text-gray-800 text-center mb-2">Pile A</h3>
-          <div className="grid grid-cols-3 gap-0.5 h-72">
+          <div className={`grid grid-cols-3 gap-0 ${getZoneHeight(cardSize)}`}>
             {pile1CardObjects.slice(0, 6).map((cardInPool) => (
               <div
                 key={cardInPool.card.id}
@@ -113,7 +116,7 @@ export const PackDisplay: React.FC<PackDisplayProps> = ({
               >
                 <Card
                   cardInPool={cardInPool}
-                  size="medium"
+                  size={cardSize}
                   isSelected={true}
                 />
               </div>
@@ -135,7 +138,7 @@ export const PackDisplay: React.FC<PackDisplayProps> = ({
         {/* Initial Pack Area (Middle Column) */}
         <div className="bg-amber-200 p-2 flex-1 border-r border-black">
           <h3 className="text-sm font-medium text-gray-800 text-center mb-2">Initial Pack Area</h3>
-          <div className="grid grid-cols-3 gap-0.5 h-72">
+          <div className={`grid grid-cols-3 gap-0 ${getZoneHeight(cardSize)}`}>
             {unassignedCards.slice(0, 6).map((cardInPool) => (
               <div
                 key={cardInPool.card.id}
@@ -147,7 +150,7 @@ export const PackDisplay: React.FC<PackDisplayProps> = ({
               >
                 <Card
                   cardInPool={cardInPool}
-                  size="medium"
+                  size={cardSize}
                   isSelected={false}
                 />
               </div>
@@ -169,7 +172,7 @@ export const PackDisplay: React.FC<PackDisplayProps> = ({
         {/* Pile B (Right Column) */}
         <div className="bg-green-200 p-2 flex-1">
           <h3 className="text-sm font-medium text-gray-800 text-center mb-2">Pile B</h3>
-          <div className="grid grid-cols-3 gap-0.5 h-72">
+          <div className={`grid grid-cols-3 gap-0 ${getZoneHeight(cardSize)}`}>
             {pile2CardObjects.slice(0, 6).map((cardInPool) => (
               <div
                 key={cardInPool.card.id}
@@ -181,7 +184,7 @@ export const PackDisplay: React.FC<PackDisplayProps> = ({
               >
                 <Card
                   cardInPool={cardInPool}
-                  size="medium"
+                  size={cardSize}
                   isSelected={true}
                 />
               </div>

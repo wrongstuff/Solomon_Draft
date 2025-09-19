@@ -39,6 +39,7 @@ export interface Pack {
   id: string;
   cards: CardInPool[];
   isActive: boolean;
+  piles?: Pile[];
 }
 
 export type ColorIdentity = 'W' | 'U' | 'B' | 'R' | 'G' | 'C' | 'M';

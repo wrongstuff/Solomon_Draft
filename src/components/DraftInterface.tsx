@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { DraftState } from '@/types/draft';
 import { Pile } from '@/types/card';
-import { Card } from './Card';
 import { PackDisplay } from './PackDisplay';
 import { PileSelector } from './PileSelector';
 
@@ -20,7 +19,6 @@ export const DraftInterface: React.FC<DraftInterfaceProps> = ({
   onDraftAction, 
   onReset 
 }) => {
-  const [selectedCards, setSelectedCards] = useState<Set<string>>(new Set());
   const [pile1Cards, setPile1Cards] = useState<string[]>([]);
   const [pile2Cards, setPile2Cards] = useState<string[]>([]);
 
@@ -61,7 +59,6 @@ export const DraftInterface: React.FC<DraftInterfaceProps> = ({
     ];
 
     onDraftAction('split-pack', { piles });
-    setSelectedCards(new Set());
     setPile1Cards([]);
     setPile2Cards([]);
   };
@@ -153,6 +150,7 @@ export const DraftInterface: React.FC<DraftInterfaceProps> = ({
           piles={draft.activePack.piles}
           onChoosePile={handleChoosePile}
           currentPhase={draft.currentPhase}
+          cardSize="large"
         />
       ) : (
         <PackDisplay
@@ -162,6 +160,7 @@ export const DraftInterface: React.FC<DraftInterfaceProps> = ({
           pile2Cards={pile2Cards}
           onSplitPack={handleSplitPack}
           currentPhase={draft.currentPhase}
+          cardSize="large"
         />
       )}
     </div>

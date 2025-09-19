@@ -1,9 +1,10 @@
 import React from 'react';
 import { Card as CardType, CardInPool } from '@/types/card';
+import { CardSize, getCardDimensions } from '@/constants/cardDimensions';
 
 interface CardProps {
   cardInPool: CardInPool;
-  size?: 'small' | 'medium' | 'large';
+  size?: CardSize;
   onClick?: () => void;
   isSelected?: boolean;
   isDraggable?: boolean;
@@ -22,11 +23,8 @@ export const Card: React.FC<CardProps> = ({
 }) => {
   const { card, quantity } = cardInPool;
   
-  const sizeClasses = {
-    small: 'w-16 h-24',
-    medium: 'w-24 h-36',
-    large: 'w-32 h-48',
-  };
+  const dimensions = getCardDimensions(size);
+  const sizeClasses = `${dimensions.tailwindWidth} ${dimensions.tailwindHeight}`;
 
   const textSizeClasses = {
     small: 'text-xs',
@@ -94,18 +92,15 @@ export const Card: React.FC<CardProps> = ({
 /**
  * Component for displaying a placeholder card when loading or when card data is unavailable
  */
-export const CardPlaceholder: React.FC<{ size?: 'small' | 'medium' | 'large' }> = ({ 
+export const CardPlaceholder: React.FC<{ size?: CardSize }> = ({ 
   size = 'medium' 
 }) => {
-  const sizeClasses = {
-    small: 'w-16 h-24',
-    medium: 'w-24 h-36',
-    large: 'w-32 h-48',
-  };
+  const dimensions = getCardDimensions(size);
+  const sizeClasses = `${dimensions.tailwindWidth} ${dimensions.tailwindHeight}`;
 
   return (
     <div className={`
-      ${sizeClasses[size]} 
+      ${sizeClasses} 
       bg-gray-300 rounded-lg flex items-center justify-center
       animate-pulse
     `}>

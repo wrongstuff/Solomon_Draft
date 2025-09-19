@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Pile } from '@/types/card';
 import { Card } from './Card';
+import { CardSize, getZoneHeight } from '@/constants/cardDimensions';
 
 interface PileSelectorProps {
   piles: Pile[];
   onChoosePile: (pileId: string) => void;
   currentPhase: 'P1-split' | 'P1-choose' | 'P2-split' | 'P2-choose';
+  cardSize?: CardSize;
 }
 
 /**
@@ -16,6 +18,7 @@ export const PileSelector: React.FC<PileSelectorProps> = ({
   piles,
   onChoosePile,
   currentPhase,
+  cardSize = 'large',
 }) => {
   const [selectedPile, setSelectedPile] = useState<string | null>(null);
   const isChoosingPhase = currentPhase === 'P1-choose' || currentPhase === 'P2-choose';
@@ -78,12 +81,12 @@ export const PileSelector: React.FC<PileSelectorProps> = ({
           onClick={() => handlePileSelect(piles[0]?.id || '')}
         >
           <h3 className="text-sm font-medium text-gray-800 text-center mb-2">Pile A</h3>
-          <div className="grid grid-cols-3 gap-0.5 h-72">
+          <div className={`grid grid-cols-3 gap-0 ${getZoneHeight(cardSize)}`}>
             {piles[0]?.cards.slice(0, 6).map((cardInPool) => (
                 <Card
                   key={cardInPool.card.id}
                   cardInPool={cardInPool}
-                  size="medium"
+                  size={cardSize}
                 />
             ))}
             {/* Show overflow indicator if more than 6 cards */}
@@ -125,12 +128,12 @@ export const PileSelector: React.FC<PileSelectorProps> = ({
           onClick={() => handlePileSelect(piles[1]?.id || '')}
         >
           <h3 className="text-sm font-medium text-gray-800 text-center mb-2">Pile B</h3>
-          <div className="grid grid-cols-3 gap-0.5 h-72">
+          <div className={`grid grid-cols-3 gap-0 ${getZoneHeight(cardSize)}`}>
             {piles[1]?.cards.slice(0, 6).map((cardInPool) => (
                 <Card
                   key={cardInPool.card.id}
                   cardInPool={cardInPool}
-                  size="medium"
+                  size={cardSize}
                 />
             ))}
             {/* Show overflow indicator if more than 6 cards */}
