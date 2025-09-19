@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { copyToClipboard, hashCardOrder } from '@/utils/seedUtils';
 
 interface DeckInputFormProps {
   onDeckInput: (url: string) => Promise<void>;
@@ -13,6 +14,29 @@ interface DeckInputFormProps {
 export const DeckInputForm: React.FC<DeckInputFormProps> = ({ onDeckInput, isLoading, parsedDeckList }) => {
   const [url, setUrl] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
+  const [generatedSeed, setGeneratedSeed] = useState<string>('');
+
+  // Generate seed when deck list is loaded
+  useEffect(() => {
+    if (parsedDeckList && parsedDeckList.cards.length > 0) {
+      // Create a simple shuffled order for seed generation
+      const shuffledCards = [...parsedDeckList.cards].sort(() => Math.random() - 0.5);
+      const seed = hashCardOrder(shuffledCards);
+      setGeneratedSeed(seed);
+    }
+  }, [parsedDeckList]);
+
+  /**
+   * Handles copying the seed to clipboard
+   */
+  const handleCopySeed = async (): Promise<void> => {
+    try {
+      await copyToClipboard(generatedSeed);
+      // Could add a toast notification here
+    } catch (error) {
+      console.error('Failed to copy seed:', error);
+    }
+  };
 
   /**
    * Handles form submission and deck list parsing
@@ -99,6 +123,26 @@ export const DeckInputForm: React.FC<DeckInputFormProps> = ({ onDeckInput, isLoa
             <p><strong>Total Cards:</strong> {parsedDeckList.cards.length}</p>
             <p className="text-green-600">Ready to configure draft settings below!</p>
           </div>
+          
+          {/* Seed Display */}
+          {generatedSeed && (
+            <div className="mt-4 p-3 bg-gray-100 rounded">
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="text-sm font-medium text-gray-700">Draft Seed:</span>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Share this seed to recreate the same draft order
+                  </p>
+                </div>
+                <button 
+                  onClick={handleCopySeed}
+                  className="btn btn-sm"
+                >
+                  Copy Seed
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

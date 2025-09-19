@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 interface DraftSettingsProps {
   onStartDraft: (packSize: number, numberOfRounds: number) => void;
+  onStartSeededDraft: (seed: string, packSize: number, numberOfRounds: number) => Promise<void>;
   isLoading: boolean;
   hasDeckList: boolean;
   parsedDeckList: { url: string; type: 'moxfield' | 'cubecobra'; cards: any[]; name?: string } | null;
@@ -11,9 +12,11 @@ interface DraftSettingsProps {
  * Component for configuring draft settings before starting
  * Allows players to set pack size and number of rounds
  */
-export const DraftSettings: React.FC<DraftSettingsProps> = ({ onStartDraft, isLoading, hasDeckList, parsedDeckList }) => {
+export const DraftSettings: React.FC<DraftSettingsProps> = ({ onStartDraft, onStartSeededDraft, isLoading, hasDeckList, parsedDeckList }) => {
   const [packSize, setPackSize] = useState<number>(6);
   const [numberOfRounds, setNumberOfRounds] = useState<number>(15);
+  const [customSeed, setCustomSeed] = useState<string>('');
+  const [isLoadingSeed, setIsLoadingSeed] = useState<boolean>(false);
 
   /**
    * Handles starting a new draft with the current settings
@@ -25,6 +28,25 @@ export const DraftSettings: React.FC<DraftSettingsProps> = ({ onStartDraft, isLo
     }
 
     onStartDraft(packSize, numberOfRounds);
+  };
+
+  /**
+   * Handles loading a seeded draft
+   */
+  const handleLoadSeededDraft = async (): Promise<void> => {
+    if (!customSeed.trim()) {
+      alert('Please enter a seed');
+      return;
+    }
+
+    setIsLoadingSeed(true);
+    try {
+      await onStartSeededDraft(customSeed.trim(), packSize, numberOfRounds);
+    } catch (error) {
+      alert(`Failed to load seeded draft: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    } finally {
+      setIsLoadingSeed(false);
+    }
   };
 
   /**
@@ -113,12 +135,45 @@ export const DraftSettings: React.FC<DraftSettingsProps> = ({ onStartDraft, isLo
           </div>
         </div>
 
+        {/* Seed Input */}
+        <div className="border-t pt-4">
+          <h3 className="font-medium text-gray-900 mb-3">Use Existing Seed (Optional)</h3>
+          <div className="space-y-3">
+            <div>
+              <label htmlFor="seed-input" className="block text-sm font-medium text-gray-700 mb-2">
+                Draft Seed
+              </label>
+              <div className="flex gap-2">
+                <input
+                  id="seed-input"
+                  type="text"
+                  value={customSeed}
+                  onChange={(e) => setCustomSeed(e.target.value)}
+                  placeholder="Paste seed here..."
+                  className="input flex-1"
+                  disabled={isLoading || isLoadingSeed}
+                />
+                <button 
+                  onClick={handleLoadSeededDraft}
+                  disabled={!customSeed.trim() || isLoading || isLoadingSeed}
+                  className="btn btn-primary"
+                >
+                  {isLoadingSeed ? 'Loading...' : 'Load Seed'}
+                </button>
+              </div>
+              <p className="text-sm text-gray-500 mt-1">
+                Paste a seed to recreate an existing draft order
+              </p>
+            </div>
+          </div>
+        </div>
+
         <button
           onClick={handleStartDraft}
           className={`btn w-full ${hasEnoughCards ? 'btn-success' : 'btn-disabled'}`}
           disabled={isLoading || !hasDeckList || !hasEnoughCards}
         >
-          {isLoading ? 'Starting Draft...' : hasEnoughCards ? 'Start Draft' : 'Not Enough Cards'}
+          {isLoading ? 'Starting Draft...' : hasEnoughCards ? 'Start New Draft' : 'Not Enough Cards'}
         </button>
       </div>
     </div>

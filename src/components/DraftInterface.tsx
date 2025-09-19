@@ -3,6 +3,7 @@ import { DraftState } from '@/types/draft';
 import { Pile } from '@/types/card';
 import { PackDisplay } from './PackDisplay';
 import { PileSelector } from './PileSelector';
+import { copyToClipboard } from '@/utils/seedUtils';
 
 interface DraftInterfaceProps {
   draft: DraftState;
@@ -120,8 +121,37 @@ export const DraftInterface: React.FC<DraftInterfaceProps> = ({
     );
   }
 
+  /**
+   * Handles copying the seed to clipboard
+   */
+  const handleCopySeed = async (): Promise<void> => {
+    try {
+      await copyToClipboard(draft.settings.seed);
+    } catch (error) {
+      console.error('Failed to copy seed:', error);
+    }
+  };
+
   return (
     <div className="space-y-6">
+      {/* Draft Seed Display */}
+      <div className="card bg-blue-50 border-blue-200">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="font-medium text-blue-900 mb-1">Draft Seed</h3>
+            <p className="text-sm text-blue-700">
+              Share this seed to recreate the same draft order
+            </p>
+          </div>
+          <button 
+            onClick={handleCopySeed}
+            className="btn btn-sm btn-primary"
+          >
+            Copy Seed
+          </button>
+        </div>
+      </div>
+
       {/* Draft Status */}
       <div className="card">
         <div className="flex justify-between items-center">

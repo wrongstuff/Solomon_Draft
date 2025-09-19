@@ -1,5 +1,7 @@
 import { DraftState, DraftSettings, DeckListInput, DraftAction } from '@/types/draft';
 import { CardInPool, Pile, Pack, ColorIdentity } from '@/types/card';
+import { hashCardOrder, dehashCardOrder } from '@/utils/seedUtils';
+import { scryfallService } from './scryfall';
 
 /**
  * Service for managing draft game logic and state transitions
@@ -24,8 +26,8 @@ export class DraftService {
     const shuffledCards = this.shuffleArray([...deckList.cards]);
     const cardsInPool = shuffledCards.slice(0, poolSize);
     
-    // Generate a seed for reproducible shuffling
-    const seed = this.generateSeed();
+    // Generate a seed from the card order
+    const seed = hashCardOrder(cardsInPool);
 
     const settings: DraftSettings = {
       packSize,
@@ -37,6 +39,82 @@ export class DraftService {
     return {
       settings,
       cardsInPool,
+      currentRound: 1,
+      currentPack: 1,
+      currentPhase: 'P1-split',
+      activePack: null,
+      p1Picks: this.initializePlayerPicks(),
+      p2Picks: this.initializePlayerPicks(),
+      isComplete: false,
+      history: [],
+    };
+  }
+
+  /**
+   * Creates a new draft from a seed
+   * @param seed - The seed string to reconstruct the draft from
+   * @param packSize - Number of cards per pack
+   * @param numberOfRounds - Number of rounds to draft
+   * @returns Promise resolving to new draft state ready to begin
+   */
+  static async createSeededDraft(seed: string, packSize: number, numberOfRounds: number): Promise<DraftState> {
+    try {
+      // 1. Dehash seed to get card data (card names and quantities)
+      const cardData = dehashCardOrder(seed);
+      
+      // 2. Convert card data to deck list format for Scryfall
+      const deckList = cardData
+        .map(card => `${card.quantity} ${card.name}`)
+        .join('\n');
+      
+      console.log('Reconstructed deck list from seed:', deckList.substring(0, 200) + '...');
+      
+      // 3. Fetch full card data from Scryfall using the deck list
+      const cardOrder = await scryfallService.convertDeckListToCards(deckList);
+      
+      if (cardOrder.length === 0) {
+        throw new Error('No valid cards found in seed');
+      }
+      
+      console.log('Successfully loaded', cardOrder.length, 'cards from seed');
+      
+      // 4. Create draft with reconstructed cards
+      return this.createDraftWithCards(cardOrder, packSize, numberOfRounds);
+    } catch (error) {
+      throw new Error(`Failed to create seeded draft: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+
+  /**
+   * Creates a draft with a specific card order (internal helper)
+   * @param cardsInPool - The exact cards to use in the draft pool
+   * @param packSize - Number of cards per pack
+   * @param numberOfRounds - Number of rounds to draft
+   * @returns New draft state ready to begin
+   */
+  private static createDraftWithCards(cardsInPool: CardInPool[], packSize: number, numberOfRounds: number): DraftState {
+    const poolSize = 2 * packSize * numberOfRounds;
+    
+    if (cardsInPool.length < poolSize) {
+      throw new Error(`Not enough cards in seed. Need at least ${poolSize}, got ${cardsInPool.length}`);
+    }
+
+    // Use only the cards we need for the draft
+    const draftCards = cardsInPool.slice(0, poolSize);
+    
+    // Generate a seed from the card order
+    const seed = hashCardOrder(draftCards);
+
+    const settings: DraftSettings = {
+      packSize,
+      numberOfRounds,
+      poolSize,
+      seed,
+    };
+
+    return {
+      settings,
+      cardsInPool: draftCards,
       currentRound: 1,
       currentPack: 1,
       currentPhase: 'P1-split',
@@ -319,11 +397,4 @@ export class DraftService {
     return shuffled;
   }
 
-  /**
-   * Generates a random seed for reproducible shuffling
-   * @returns Random seed string
-   */
-  private static generateSeed(): string {
-    return Math.random().toString(36).substring(2, 15);
-  }
 }

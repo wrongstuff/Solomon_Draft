@@ -213,6 +213,39 @@ class ScryfallService {
   }
 
   /**
+   * Fetches multiple cards by their Scryfall IDs
+   * @param cardIds - Array of Scryfall card IDs
+   * @returns Promise resolving to array of Card objects
+   */
+  async fetchCardsByIds(cardIds: string[]): Promise<Card[]> {
+    if (cardIds.length === 0) return [];
+
+    console.log('Fetching cards by IDs:', cardIds.slice(0, 5), '... (total:', cardIds.length, ')');
+
+    // Use Scryfall's collection endpoint for bulk fetching
+    const response = await this.makeRequest('/cards/collection', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        identifiers: cardIds.map(id => ({ id }))
+      })
+    });
+
+    const data = await response.json();
+    console.log('Scryfall response:', {
+      found: data.data?.length || 0,
+      not_found: data.not_found?.length || 0,
+      total_requested: cardIds.length
+    });
+
+    if (data.not_found && data.not_found.length > 0) {
+      console.warn('Cards not found:', data.not_found);
+    }
+
+    return data.data || [];
+  }
+
+  /**
    * Converts a deck list string (format: "4 Lightning Bolt") into CardInPool objects
    * @param deckList - The deck list string with quantity and card name on each line
    * @returns Promise resolving to array of CardInPool objects

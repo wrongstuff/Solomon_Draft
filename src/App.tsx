@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { GameState, DraftState, DeckListInput } from '@/types/draft';
+import { GameState, DeckListInput } from '@/types/draft';
 import { DeckListParser } from '@/services/deckParsers';
 import { DraftService } from '@/services/draftService';
 import { Header } from '@/components/Header';
@@ -77,6 +77,36 @@ const App: React.FC = () => {
   }, [parsedDeckList]);
 
   /**
+   * Starts a seeded draft with the given settings and automatically deals the first pack
+   * @param seed - The seed string to reconstruct the draft from
+   * @param packSize - Number of cards per pack
+   * @param numberOfRounds - Number of rounds to draft
+   */
+  const handleStartSeededDraft = useCallback(async (
+    seed: string,
+    packSize: number, 
+    numberOfRounds: number
+  ): Promise<void> => {
+    setGameState(prev => ({ ...prev, isLoading: true, error: null }));
+
+    try {
+      // Create the seeded draft
+      const draft = await DraftService.createSeededDraft(seed, packSize, numberOfRounds);
+      
+      // Automatically deal the first pack
+      const draftWithFirstPack = DraftService.performDraftAction(draft, 'start-round', {});
+      
+      setGameState(prev => ({ ...prev, draft: draftWithFirstPack, isLoading: false, error: null }));
+    } catch (error) {
+      setGameState(prev => ({ 
+        ...prev, 
+        isLoading: false,
+        error: error instanceof Error ? error.message : 'Failed to create seeded draft' 
+      }));
+    }
+  }, []);
+
+  /**
    * Handles draft actions (splitting packs, choosing piles)
    * @param action - The action to perform
    * @param data - Additional data for the action
@@ -134,12 +164,13 @@ const App: React.FC = () => {
                 isLoading={gameState.isLoading}
                 parsedDeckList={parsedDeckList}
               />
-              <DraftSettings 
-                onStartDraft={handleStartDraft}
-                isLoading={gameState.isLoading}
-                hasDeckList={!!parsedDeckList}
-                parsedDeckList={parsedDeckList}
-              />
+            <DraftSettings 
+              onStartDraft={handleStartDraft}
+              onStartSeededDraft={handleStartSeededDraft}
+              isLoading={gameState.isLoading}
+              hasDeckList={!!parsedDeckList}
+              parsedDeckList={parsedDeckList}
+            />
             </div>
           </div>
         ) : (
