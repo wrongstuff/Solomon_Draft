@@ -9,6 +9,8 @@ import { DraftInterface } from '@/components/DraftInterface';
 import { PlayerPicks } from '@/components/PlayerPicks';
 import { ExportSection } from '@/components/ExportSection';
 import { DraftHistory } from '@/components/DraftHistory';
+// Import the image as a static asset
+const solomonChopImage = '/solomon_chop.png';
 
 /**
  * Main application component that manages the overall game state
@@ -199,7 +201,7 @@ const App: React.FC = () => {
     <div className="min-h-screen bg-gray-100">
       <Header />
       
-      <main className="container mx-auto px-4 py-8">
+      <main className="mx-auto px-4 py-8 w-full max-w-[2000px]">
         {gameState.error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
             {gameState.error}
@@ -208,22 +210,21 @@ const App: React.FC = () => {
 
         {!gameState.draft ? (
           <div className="space-y-8">
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-3 gap-6">
               {/* Left Column - Story and Rules */}
-             <div className="card">
-               <h2 className="text-xl font-bold mb-4">The Story of King Solomon</h2>
-               <div className="space-y-4 text-gray-700">
-                 <p>
-                   Two women came before King Solomon, each claiming to be the mother of the same baby. With no witnesses 
-                   and both women insisting the child was theirs, Solomon faced an impossible decision.
-                 </p>
-                 <p>
-                   In his wisdom, Solomon ordered the baby to be cut in half so each woman could have a portion. Something something "religion"
-                 </p>
+              <div className="card aspect-square overflow-y-auto">
+                <h2 className="text-3xl font-bold mb-4">The Story of King Solomon</h2>
+                <div className="space-y-4 text-gray-700">
+                  <p className="text-lg">
+                    Two women came before King Solomon, each claiming to be the mother of the same baby. With no witnesses 
+                    and both women insisting the child was theirs, Solomon faced an impossible decision.
+ 
+                    In his wisdom, Solomon ordered the baby to be cut in half so each woman could have a portion. Something something "religion"
+                  </p>
                   
-                 <h3 className="text-lg font-semibold mt-6 mb-3 text-gray-800">How Solomon Draft Works</h3>
+                  <h3 className="text-2xl font-semibold mt-6 mb-3 text-gray-800">How Solomon Draft Works</h3>
                   
-                  <div className="space-y-3 text-sm">
+                  <div className="space-y-3 text-lg">
                     <div>
                       <strong>1. Pack Splitting:</strong> One player splits each pack into two piles. 
                       They must assign every card to a pile, and each pile must have at least one card.
@@ -247,36 +248,38 @@ const App: React.FC = () => {
                       just because you drafted cards doesn't mean you can play them. Staying flexible early is important, lots of pivoting
                       is key.
                     </div>
-                    
-                  </div>
-                  
-                  <div className="mt-6 text-center">
-                    <img 
-                      src="/midas chop.png" 
-                      alt="Midas Chop" 
-                      className="mx-auto max-w-full h-auto rounded-lg shadow-md"
-                    />
                   </div>
                 </div>
               </div>
 
+              {/* Middle Column - Image */}
+              <div className="flex items-center justify-center aspect-square">
+                <img 
+                  src={solomonChopImage} 
+                  alt="Solomon Chop" 
+                  className="w-full h-full object-cover rounded-lg shadow-md"
+                />
+              </div>
+
               {/* Right Column - All Input and Settings */}
-              <div className="space-y-6">
-                {/* Deck List Input */}
-                <DeckInputForm 
-                  onDeckInput={handleDeckInput}
-                  onLoadSeed={handleLoadSeed}
-                  isLoading={gameState.isLoading}
-                  parsedDeckList={parsedDeckList || seededDeckList}
-                />
-                
-                {/* Draft Settings */}
-                <DraftSettings 
-                  onStartDraft={parsedDeckList ? handleStartDraft : handleStartSeededDraftFromList}
-                  isLoading={gameState.isLoading}
-                  hasDeckList={!!(parsedDeckList || seededDeckList)}
-                  parsedDeckList={parsedDeckList || seededDeckList}
-                />
+              <div className="card aspect-square overflow-y-auto">
+                <div className="space-y-6">
+                  {/* Deck List Input */}
+                  <DeckInputForm 
+                    onDeckInput={handleDeckInput}
+                    onLoadSeed={handleLoadSeed}
+                    isLoading={gameState.isLoading}
+                    parsedDeckList={parsedDeckList || seededDeckList}
+                  />
+                  
+                  {/* Draft Settings */}
+                  <DraftSettings 
+                    onStartDraft={parsedDeckList ? handleStartDraft : handleStartSeededDraftFromList}
+                    isLoading={gameState.isLoading}
+                    hasDeckList={!!(parsedDeckList || seededDeckList)}
+                    parsedDeckList={parsedDeckList || seededDeckList}
+                  />
+                </div>
               </div>
             </div>
           </div>
