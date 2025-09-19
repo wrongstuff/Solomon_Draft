@@ -3,16 +3,16 @@ import { copyToClipboard, hashCardOrder } from '@/utils/seedUtils';
 
 interface DeckInputFormProps {
   onDeckInput: (url: string) => Promise<void>;
-  onStartSeededDraft: (seed: string, packSize: number, numberOfRounds: number) => Promise<void>;
+  onLoadSeed: (seed: string) => Promise<void>;
   isLoading: boolean;
-  parsedDeckList: { url: string; type: 'moxfield' | 'cubecobra'; cards: any[]; name?: string } | null;
+  parsedDeckList: { url: string; type: 'moxfield' | 'cubecobra' | 'seed'; cards: any[]; name?: string; seed?: string } | null;
 }
 
 /**
  * Form component for inputting deck list URLs
  * Supports Moxfield and CubeCobra URLs
  */
-export const DeckInputForm: React.FC<DeckInputFormProps> = ({ onDeckInput, onStartSeededDraft, isLoading, parsedDeckList }) => {
+export const DeckInputForm: React.FC<DeckInputFormProps> = ({ onDeckInput, onLoadSeed, isLoading, parsedDeckList }) => {
   const [url, setUrl] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [generatedSeed, setGeneratedSeed] = useState<string>('');
@@ -42,9 +42,9 @@ export const DeckInputForm: React.FC<DeckInputFormProps> = ({ onDeckInput, onSta
   };
 
   /**
-   * Handles loading a seeded draft
+   * Handles loading a seed
    */
-  const handleLoadSeededDraft = async (): Promise<void> => {
+  const handleLoadSeed = async (): Promise<void> => {
     if (!customSeed.trim()) {
       alert('Please enter a seed');
       return;
@@ -52,10 +52,10 @@ export const DeckInputForm: React.FC<DeckInputFormProps> = ({ onDeckInput, onSta
 
     setIsLoadingSeed(true);
     try {
-      // Use default pack size and rounds for seeded drafts
-      await onStartSeededDraft(customSeed.trim(), 6, 15);
+      // Just load the seed data, don't start the draft yet
+      await onLoadSeed(customSeed.trim());
     } catch (error) {
-      alert(`Failed to load seeded draft: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      alert(`Failed to load seed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setIsLoadingSeed(false);
     }
@@ -185,7 +185,7 @@ export const DeckInputForm: React.FC<DeckInputFormProps> = ({ onDeckInput, onSta
               disabled={isLoading || isLoadingSeed}
             />
             <button 
-              onClick={handleLoadSeededDraft}
+              onClick={handleLoadSeed}
               disabled={!customSeed.trim() || isLoading || isLoadingSeed}
               className="btn btn-primary"
             >

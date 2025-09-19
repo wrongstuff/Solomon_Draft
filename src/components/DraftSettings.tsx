@@ -4,7 +4,7 @@ interface DraftSettingsProps {
   onStartDraft: (packSize: number, numberOfRounds: number) => void;
   isLoading: boolean;
   hasDeckList: boolean;
-  parsedDeckList: { url: string; type: 'moxfield' | 'cubecobra'; cards: any[]; name?: string } | null;
+  parsedDeckList: { url: string; type: 'moxfield' | 'cubecobra' | 'seed'; cards: any[]; name?: string; seed?: string } | null;
 }
 
 /**

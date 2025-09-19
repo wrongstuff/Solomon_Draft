@@ -51,7 +51,8 @@ export interface GameState {
 
 export interface DeckListInput {
   url: string;
-  type: 'moxfield' | 'cubecobra';
+  type: 'moxfield' | 'cubecobra' | 'seed';
   cards: CardInPool[];
   name?: string;
+  seed?: string;
 }

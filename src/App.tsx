@@ -22,6 +22,7 @@ const App: React.FC = () => {
   });
   const [showHistory, setShowHistory] = useState<boolean>(false);
   const [parsedDeckList, setParsedDeckList] = useState<DeckListInput | null>(null);
+  const [seededDeckList, setSeededDeckList] = useState<DeckListInput | null>(null);
 
   /**
    * Handles deck list input and parsing
@@ -77,21 +78,69 @@ const App: React.FC = () => {
   }, [parsedDeckList]);
 
   /**
-   * Starts a seeded draft with the given settings and automatically deals the first pack
-   * @param seed - The seed string to reconstruct the draft from
+   * Handles loading a seed and parsing it into a deck list
+   * @param seed - The seed string to load
+   */
+  const handleLoadSeed = useCallback(async (seed: string): Promise<void> => {
+    setGameState(prev => ({ ...prev, isLoading: true, error: null }));
+
+    try {
+      // Parse the seed to get card data
+      const { dehashCardOrder } = await import('@/utils/seedUtils');
+      const cardData = dehashCardOrder(seed);
+      
+      // Convert card data to deck list format for Scryfall
+      const deckList = cardData
+        .map(card => `${card.quantity} ${card.name}`)
+        .join('\n');
+      
+      // Use the existing deck list parser to fetch full card data
+      const parsedDeckList = await DeckListParser.parseRawDeckList(deckList);
+      
+      // Create a seeded deck list input with the actual cards
+      const seededDeckList: DeckListInput = {
+        url: `seed:${seed.substring(0, 20)}...`, // Truncated for display
+        type: 'seed',
+        cards: parsedDeckList.cards,
+        name: parsedDeckList.name,
+        seed: seed
+      };
+
+      setSeededDeckList(seededDeckList);
+      setParsedDeckList(null); // Clear any existing deck list
+      setGameState(prev => ({ ...prev, isLoading: false, error: null }));
+    } catch (error) {
+      setGameState(prev => ({ 
+        ...prev, 
+        isLoading: false,
+        error: error instanceof Error ? error.message : 'Failed to load seed' 
+      }));
+    }
+  }, []);
+
+
+  /**
+   * Starts a draft with the current seeded deck list
    * @param packSize - Number of cards per pack
    * @param numberOfRounds - Number of rounds to draft
    */
-  const handleStartSeededDraft = useCallback(async (
-    seed: string,
+  const handleStartSeededDraftFromList = useCallback(async (
     packSize: number, 
     numberOfRounds: number
   ): Promise<void> => {
+    if (!seededDeckList?.seed) {
+      setGameState(prev => ({ 
+        ...prev, 
+        error: 'No seed loaded' 
+      }));
+      return;
+    }
+
     setGameState(prev => ({ ...prev, isLoading: true, error: null }));
 
     try {
       // Create the seeded draft
-      const draft = await DraftService.createSeededDraft(seed, packSize, numberOfRounds);
+      const draft = await DraftService.createSeededDraft(seededDeckList.seed, packSize, numberOfRounds);
       
       // Automatically deal the first pack
       const draftWithFirstPack = DraftService.performDraftAction(draft, 'start-round', {});
@@ -104,7 +153,7 @@ const App: React.FC = () => {
         error: error instanceof Error ? error.message : 'Failed to create seeded draft' 
       }));
     }
-  }, []);
+  }, [seededDeckList]);
 
   /**
    * Handles draft actions (splitting packs, choosing piles)
@@ -136,6 +185,7 @@ const App: React.FC = () => {
     });
     setShowHistory(false);
     setParsedDeckList(null);
+    setSeededDeckList(null);
   }, []);
 
   /**
@@ -161,15 +211,15 @@ const App: React.FC = () => {
             <div className="grid grid-cols-2 gap-6">
             <DeckInputForm 
               onDeckInput={handleDeckInput}
-              onStartSeededDraft={handleStartSeededDraft}
+              onLoadSeed={handleLoadSeed}
               isLoading={gameState.isLoading}
-              parsedDeckList={parsedDeckList}
+              parsedDeckList={parsedDeckList || seededDeckList}
             />
             <DraftSettings 
-              onStartDraft={handleStartDraft}
+              onStartDraft={parsedDeckList ? handleStartDraft : handleStartSeededDraftFromList}
               isLoading={gameState.isLoading}
-              hasDeckList={!!parsedDeckList}
-              parsedDeckList={parsedDeckList}
+              hasDeckList={!!(parsedDeckList || seededDeckList)}
+              parsedDeckList={parsedDeckList || seededDeckList}
             />
             </div>
           </div>
