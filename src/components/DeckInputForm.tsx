@@ -1,33 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { hashCardOrder } from '@/utils/seedUtils';
+import React, { useState } from 'react';
 
 interface DeckInputFormProps {
   onDeckInput: (url: string) => Promise<void>;
   onLoadSeed: (seed: string) => Promise<void>;
   isLoading: boolean;
-  parsedDeckList: { url: string; type: 'moxfield' | 'cubecobra' | 'seed'; cards: any[]; name?: string; seed?: string } | null;
 }
 
 /**
  * Form component for inputting deck list URLs
  * Supports Moxfield and CubeCobra URLs
  */
-export const DeckInputForm: React.FC<DeckInputFormProps> = ({ onDeckInput, onLoadSeed, isLoading, parsedDeckList }) => {
+export const DeckInputForm: React.FC<DeckInputFormProps> = ({ onDeckInput, onLoadSeed, isLoading }) => {
   const [url, setUrl] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
-  const [generatedSeed, setGeneratedSeed] = useState<string>('');
   const [customSeed, setCustomSeed] = useState<string>('');
   const [isLoadingSeed, setIsLoadingSeed] = useState<boolean>(false);
 
-  // Generate seed when deck list is loaded
-  useEffect(() => {
-    if (parsedDeckList && parsedDeckList.cards.length > 0) {
-      // Create a simple shuffled order for seed generation
-      const shuffledCards = [...parsedDeckList.cards].sort(() => Math.random() - 0.5);
-      const seed = hashCardOrder(shuffledCards);
-      setGeneratedSeed(seed);
-    }
-  }, [parsedDeckList]);
 
 
   /**

@@ -106,7 +106,7 @@ export const DraftHistory: React.FC<DraftHistoryProps> = ({
         <p className="text-gray-500 text-center py-4">No actions yet</p>
       ) : (
         <div className="space-y-3 max-h-96 overflow-y-auto">
-          {history.map((action, index) => {
+          {history.map((action) => {
             const isExpanded = expandedActions.has(action.id);
             
             return (

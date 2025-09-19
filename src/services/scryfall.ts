@@ -46,13 +46,14 @@ class ScryfallService {
   /**
    * Makes a rate-limited request to the Scryfall API
    * @param endpoint - The API endpoint to call
+   * @param options - Optional fetch options
    * @returns Promise resolving to the API response data
    */
-  private async makeRequest<T>(endpoint: string): Promise<T> {
+  private async makeRequest<T>(endpoint: string, options?: RequestInit): Promise<T> {
     return new Promise<T>((resolve, reject) => {
       this.requestQueue.push(async (): Promise<void> => {
         try {
-          const response = await fetch(`${this.baseUrl}${endpoint}`);
+          const response = await fetch(`${this.baseUrl}${endpoint}`, options);
           
           if (response.status === 429) {
             // Rate limited - respect the Retry-After header and retry
@@ -223,15 +224,13 @@ class ScryfallService {
     console.log('Fetching cards by IDs:', cardIds.slice(0, 5), '... (total:', cardIds.length, ')');
 
     // Use Scryfall's collection endpoint for bulk fetching
-    const response = await this.makeRequest('/cards/collection', {
+    const data = await this.makeRequest<{ data: Card[], not_found: any[] }>('/cards/collection', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         identifiers: cardIds.map(id => ({ id }))
       })
     });
-
-    const data = await response.json();
     console.log('Scryfall response:', {
       found: data.data?.length || 0,
       not_found: data.not_found?.length || 0,

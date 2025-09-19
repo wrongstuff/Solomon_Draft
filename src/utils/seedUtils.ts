@@ -55,7 +55,7 @@ export function dehashCardOrder(seed: string): CardData[] {
     // Parse back to card data
     const result = JSON.parse(dataString);
     console.log('Parsed card data count:', result.length);
-    console.log('First few card names:', result.slice(0, 3).map(c => c.name));
+    console.log('First few card names:', result.slice(0, 3).map((c: any) => c.name));
     return result;
   } catch (error) {
     console.error('Seed dehash error:', error);

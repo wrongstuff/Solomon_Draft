@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card as CardType, CardInPool } from '@/types/card';
+import { CardInPool } from '@/types/card';
 import { CardSize, getCardDimensions } from '@/constants/cardDimensions';
 
 interface CardProps {
@@ -18,7 +18,6 @@ export const Card: React.FC<CardProps> = ({
   cardInPool, 
   size = 'medium', 
   onClick, 
-  isSelected = false,
   isDraggable = false 
 }) => {
   const { card, quantity } = cardInPool;
@@ -26,11 +25,6 @@ export const Card: React.FC<CardProps> = ({
   const dimensions = getCardDimensions(size);
   const sizeClasses = `${dimensions.tailwindWidth} ${dimensions.tailwindHeight}`;
 
-  const textSizeClasses = {
-    small: 'text-xs',
-    medium: 'text-sm',
-    large: 'text-base',
-  };
 
   /**
    * Handles card click events

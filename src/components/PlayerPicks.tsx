@@ -34,23 +34,6 @@ export const PlayerPicks: React.FC<PlayerPicksProps> = ({ player, picks, cardSiz
     return colorNames[colorIdentity];
   };
 
-  /**
-   * Gets the color identity CSS class
-   * @param colorIdentity - Color identity string
-   * @returns CSS class for the color
-   */
-  const getColorClass = (colorIdentity: ColorIdentity): string => {
-    const colorClasses = {
-      'W': 'color-w',
-      'U': 'color-u',
-      'B': 'color-b', 
-      'R': 'color-r',
-      'G': 'color-g',
-      'C': 'color-c',
-      'M': 'color-m',
-    };
-    return colorClasses[colorIdentity];
-  };
 
   /**
    * Sorts cards within a color column based on the current sort order
@@ -96,15 +79,6 @@ export const PlayerPicks: React.FC<PlayerPicksProps> = ({ player, picks, cardSiz
 
   const colorOrder: ColorIdentity[] = ['W', 'U', 'B', 'R', 'G', 'C', 'M'];
 
-  // Calculate the maximum height needed for any column
-  const getMaxColumnHeight = () => {
-    let maxCards = 0;
-    colorOrder.forEach(colorIdentity => {
-      const cards = picks[colorIdentity] || [];
-      maxCards = Math.max(maxCards, cards.length);
-    });
-    return Math.max(12, maxCards * 2 + 10); // 2rem per card + 10rem base
-  };
 
   return (
     <div className="card bg-gray-800">
@@ -191,7 +165,7 @@ export const PlayerPicks: React.FC<PlayerPicksProps> = ({ player, picks, cardSiz
                         >
                           <Card
                             cardInPool={cardInPool}
-                            size="large"
+                            size={cardSize}
                           />
                         </div>
                       </div>

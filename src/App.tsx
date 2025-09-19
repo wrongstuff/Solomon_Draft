@@ -272,7 +272,6 @@ const App: React.FC = () => {
                     onDeckInput={handleDeckInput}
                     onLoadSeed={handleLoadSeed}
                     isLoading={gameState.isLoading}
-                    parsedDeckList={parsedDeckList || seededDeckList}
                   />
                   
                   {/* Draft Settings */}
