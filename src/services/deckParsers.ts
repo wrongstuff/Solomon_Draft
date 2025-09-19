@@ -59,7 +59,7 @@ export class DeckListParser {
     }
     
     // Use CORS proxy for production, direct proxy for development
-    const isDevelopment = import.meta.env.DEV;
+    const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
     const apiUrl = isDevelopment 
       ? `/api/cubecobra/cube/api/cubelist/${cubeId}`
       : `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://cubecobra.com/cube/api/cubelist/${cubeId}`)}`;
