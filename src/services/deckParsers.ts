@@ -58,8 +58,11 @@ export class DeckListParser {
       throw new Error('Invalid CubeCobra URL format. Expected format: https://cubecobra.com/cube/list/[cube-id] or https://cubecobra.com/cube/overview/[cube-id]');
     }
     
-    // Use the reliable /cubelist/ endpoint through proxy
-    const apiUrl = `/api/cubecobra/cube/api/cubelist/${cubeId}`;
+    // Use CORS proxy for production, direct proxy for development
+    const isDevelopment = import.meta.env.DEV;
+    const apiUrl = isDevelopment 
+      ? `/api/cubecobra/cube/api/cubelist/${cubeId}`
+      : `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://cubecobra.com/cube/api/cubelist/${cubeId}`)}`;
     
     try {
       console.log(`Attempting to fetch: ${apiUrl}`);
