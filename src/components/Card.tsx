@@ -86,15 +86,7 @@ export const Card: React.FC<CardProps> = ({
         )}
       </div>
 
-      {/* Card Info Overlay */}
-      <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-75 text-white p-1">
-        <div className={`${textSizeClasses[size]} font-medium truncate`}>
-          {card.name}
-        </div>
-        <div className={`${textSizeClasses[size]} text-gray-300`}>
-          {card.mana_cost || `${card.cmc} CMC`}
-        </div>
-      </div>
+      {/* Card Info Overlay - Removed to show clean card images */}
     </div>
   );
 };

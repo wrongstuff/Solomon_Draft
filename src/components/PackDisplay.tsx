@@ -61,74 +61,157 @@ export const PackDisplay: React.FC<PackDisplayProps> = ({
     return 'unassigned';
   };
 
-  return (
-    <div className="card">
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold">Current Pack</h3>
-        <div className="text-sm text-gray-600">
-          {pack.cards.length} cards
-        </div>
-      </div>
+  // Separate cards by their current state
+  const unassignedCards = pack.cards.filter(cardInPool => 
+    !pile1Cards.includes(cardInPool.card.id) && !pile2Cards.includes(cardInPool.card.id)
+  );
+  const pile1CardObjects = pack.cards.filter(cardInPool => 
+    pile1Cards.includes(cardInPool.card.id)
+  );
+  const pile2CardObjects = pack.cards.filter(cardInPool => 
+    pile2Cards.includes(cardInPool.card.id)
+  );
 
+  return (
+    <div className="space-y-4">
+      {/* Instructions */}
       {isSplittingPhase && (
-        <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded">
-          <h4 className="font-medium text-blue-900 mb-2">Split Instructions</h4>
-          <p className="text-sm text-blue-800">
-            Click cards to assign them to Pile 1 or Pile 2. Each pile must have at least one card.
-          </p>
-          <div className="mt-2 flex gap-4 text-sm">
-            <span className="flex items-center gap-1">
-              <div className="w-3 h-3 bg-blue-500 rounded"></div>
-              Pile 1: {pile1Cards.length} cards
-            </span>
-            <span className="flex items-center gap-1">
-              <div className="w-3 h-3 bg-green-500 rounded"></div>
-              Pile 2: {pile2Cards.length} cards
-            </span>
+        <div className="card">
+          <div className="p-4 bg-blue-50 border border-blue-200 rounded">
+            <h4 className="font-medium text-blue-900 mb-2">Split Instructions</h4>
+            <p className="text-sm text-blue-800">
+              Click cards to assign them to Pile A or Pile B. Each pile must have at least one card.
+            </p>
+            <div className="mt-2 flex gap-4 text-sm">
+              <span className="flex items-center gap-1">
+                <div className="w-3 h-3 bg-blue-500 rounded"></div>
+                Pile A: {pile1Cards.length} cards
+              </span>
+              <span className="flex items-center gap-1">
+                <div className="w-3 h-3 bg-green-500 rounded"></div>
+                Pile B: {pile2Cards.length} cards
+              </span>
+            </div>
           </div>
         </div>
       )}
 
-      {/* Cards Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-6">
-        {pack.cards.map((cardInPool) => {
-          const cardState = getCardState(cardInPool.card.id);
-          const isSelected = pile1Cards.includes(cardInPool.card.id) || 
-                           pile2Cards.includes(cardInPool.card.id);
-
-          return (
-            <div
-              key={cardInPool.card.id}
-              className={`
-                relative transition-all duration-200
-                ${isSplittingPhase ? 'cursor-pointer' : ''}
-                ${isSelected ? 'scale-105' : ''}
-              `}
-              onClick={() => handleCardClick(cardInPool.card.id)}
-            >
-              <Card
-                cardInPool={cardInPool}
-                size="medium"
-                isSelected={isSelected}
-              />
-              
-              {/* Pile indicator overlay */}
-              {isSelected && (
-                <div className={`
-                  absolute top-1 left-1 w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold
-                  ${cardState === 'pile1' ? 'bg-blue-500' : 'bg-green-500'}
-                `}>
-                  {cardState === 'pile1' ? '1' : '2'}
+      {/* Three Column Layout */}
+      <div className="flex border border-black rounded-lg overflow-hidden shadow-lg">
+        {/* Pile A (Left Column) */}
+        <div className="bg-green-200 p-2 flex-1 border-r border-black">
+          <h3 className="text-sm font-medium text-gray-800 text-center mb-2">Pile A</h3>
+          <div className="grid grid-cols-3 gap-0.5 h-72">
+            {pile1CardObjects.slice(0, 6).map((cardInPool) => (
+              <div
+                key={cardInPool.card.id}
+                className={`
+                  relative transition-all duration-200
+                  ${isSplittingPhase ? 'cursor-pointer hover:scale-105' : ''}
+                `}
+                onClick={() => isSplittingPhase && handleCardClick(cardInPool.card.id)}
+              >
+                <Card
+                  cardInPool={cardInPool}
+                  size="medium"
+                  isSelected={true}
+                />
+                {/* Pile indicator */}
+                <div className="absolute top-1 left-1 w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                  A
                 </div>
-              )}
-            </div>
-          );
-        })}
+              </div>
+            ))}
+            {/* Show overflow indicator if more than 6 cards */}
+            {pile1CardObjects.length > 6 && (
+              <div className="col-span-3 flex items-center justify-center text-gray-500 text-xs">
+                +{pile1CardObjects.length - 6} more cards
+              </div>
+            )}
+            {pile1CardObjects.length === 0 && (
+              <div className="col-span-3 flex items-center justify-center h-32 text-gray-500 text-sm">
+                No cards assigned
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Initial Pack Area (Middle Column) */}
+        <div className="bg-amber-200 p-2 flex-1 border-r border-black">
+          <h3 className="text-sm font-medium text-gray-800 text-center mb-2">Initial Pack Area</h3>
+          <div className="grid grid-cols-3 gap-0.5 h-72">
+            {unassignedCards.slice(0, 6).map((cardInPool) => (
+              <div
+                key={cardInPool.card.id}
+                className={`
+                  relative transition-all duration-200
+                  ${isSplittingPhase ? 'cursor-pointer hover:scale-105' : ''}
+                `}
+                onClick={() => isSplittingPhase && handleCardClick(cardInPool.card.id)}
+              >
+                <Card
+                  cardInPool={cardInPool}
+                  size="medium"
+                  isSelected={false}
+                />
+              </div>
+            ))}
+            {/* Show overflow indicator if more than 6 cards */}
+            {unassignedCards.length > 6 && (
+              <div className="col-span-3 flex items-center justify-center text-gray-500 text-xs">
+                +{unassignedCards.length - 6} more cards
+              </div>
+            )}
+            {unassignedCards.length === 0 && (
+              <div className="col-span-3 flex items-center justify-center h-32 text-gray-500 text-sm">
+                All cards assigned
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Pile B (Right Column) */}
+        <div className="bg-green-200 p-2 flex-1">
+          <h3 className="text-sm font-medium text-gray-800 text-center mb-2">Pile B</h3>
+          <div className="grid grid-cols-3 gap-0.5 h-72">
+            {pile2CardObjects.slice(0, 6).map((cardInPool) => (
+              <div
+                key={cardInPool.card.id}
+                className={`
+                  relative transition-all duration-200
+                  ${isSplittingPhase ? 'cursor-pointer hover:scale-105' : ''}
+                `}
+                onClick={() => isSplittingPhase && handleCardClick(cardInPool.card.id)}
+              >
+                <Card
+                  cardInPool={cardInPool}
+                  size="medium"
+                  isSelected={true}
+                />
+                {/* Pile indicator */}
+                <div className="absolute top-1 left-1 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                  B
+                </div>
+              </div>
+            ))}
+            {/* Show overflow indicator if more than 6 cards */}
+            {pile2CardObjects.length > 6 && (
+              <div className="col-span-3 flex items-center justify-center text-gray-500 text-xs">
+                +{pile2CardObjects.length - 6} more cards
+              </div>
+            )}
+            {pile2CardObjects.length === 0 && (
+              <div className="col-span-3 flex items-center justify-center h-32 text-gray-500 text-sm">
+                No cards assigned
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* Split Pack Button */}
       {isSplittingPhase && (
-        <div className="text-center">
+        <div className="card text-center">
           <button
             onClick={onSplitPack}
             disabled={!allCardsAssigned || !bothPilesHaveCards}

@@ -48,48 +48,52 @@ export const PileSelector: React.FC<PileSelectorProps> = ({
   };
 
   return (
-    <div className="card">
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold mb-2">Choose a Pile</h3>
-        <p className="text-gray-600">
-          {isChoosingPhase 
-            ? 'Select which pile you want to add to your collection'
-            : 'Waiting for pile selection...'
-          }
-        </p>
+    <div className="space-y-4">
+      {/* Instructions */}
+      <div className="card">
+        <div className="mb-4">
+          <h3 className="text-lg font-semibold mb-2">Choose a Pile</h3>
+          <p className="text-gray-600">
+            {isChoosingPhase 
+              ? 'Select which pile you want to add to your collection'
+              : 'Waiting for pile selection...'
+            }
+          </p>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        {piles.map((pile, index) => (
-          <div
-            key={pile.id}
-            className={`
-              border-2 rounded-lg p-4 transition-all duration-200
-              ${selectedPile === pile.id 
-                ? 'border-blue-500 bg-blue-50' 
-                : isChoosingPhase 
-                  ? 'border-gray-300 hover:border-blue-300 cursor-pointer' 
-                  : 'border-gray-300'
-              }
-            `}
-            onClick={() => handlePileSelect(pile.id)}
-          >
-            <h4 className="font-medium mb-3 text-center">
-              {getPileTitle(index)}
-            </h4>
-            
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-              {pile.cards.map((cardInPool) => (
+      {/* Three Column Layout */}
+      <div className="flex border border-black rounded-lg overflow-hidden shadow-lg">
+        {/* Pile A (Left Column) */}
+        <div 
+          className={`
+            bg-green-200 p-2 flex-1 border-r border-black transition-all duration-200
+            ${selectedPile === piles[0]?.id 
+              ? 'ring-2 ring-blue-500 ring-inset' 
+              : isChoosingPhase 
+                ? 'hover:bg-green-300 cursor-pointer' 
+                : ''
+            }
+          `}
+          onClick={() => handlePileSelect(piles[0]?.id || '')}
+        >
+          <h3 className="text-sm font-medium text-gray-800 text-center mb-2">Pile A</h3>
+          <div className="grid grid-cols-3 gap-0.5 h-72">
+            {piles[0]?.cards.slice(0, 6).map((cardInPool) => (
                 <Card
                   key={cardInPool.card.id}
                   cardInPool={cardInPool}
-                  size="small"
+                  size="medium"
                 />
-              ))}
-            </div>
-
-            {selectedPile === pile.id && (
-              <div className="mt-3 text-center">
+            ))}
+            {/* Show overflow indicator if more than 6 cards */}
+            {piles[0]?.cards && piles[0].cards.length > 6 && (
+              <div className="col-span-3 flex items-center justify-center text-gray-500 text-xs">
+                +{piles[0].cards.length - 6} more cards
+              </div>
+            )}
+            {selectedPile === piles[0]?.id && (
+              <div className="col-span-3 mt-3 text-center">
                 <div className="inline-flex items-center gap-2 text-blue-600 font-medium">
                   <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                   Selected
@@ -97,11 +101,59 @@ export const PileSelector: React.FC<PileSelectorProps> = ({
               </div>
             )}
           </div>
-        ))}
+        </div>
+
+        {/* Empty Middle Column for Visual Balance */}
+        <div className="bg-amber-200 p-2 flex-1 border-r border-black">
+          <h3 className="text-sm font-medium text-gray-800 text-center mb-2">Choose One</h3>
+          <div className="flex items-center justify-center h-32 text-gray-500 text-sm">
+            Select Pile A or Pile B
+          </div>
+        </div>
+
+        {/* Pile B (Right Column) */}
+        <div 
+          className={`
+            bg-green-200 p-2 flex-1 transition-all duration-200
+            ${selectedPile === piles[1]?.id 
+              ? 'ring-2 ring-green-500 ring-inset' 
+              : isChoosingPhase 
+                ? 'hover:bg-green-300 cursor-pointer' 
+                : ''
+            }
+          `}
+          onClick={() => handlePileSelect(piles[1]?.id || '')}
+        >
+          <h3 className="text-sm font-medium text-gray-800 text-center mb-2">Pile B</h3>
+          <div className="grid grid-cols-3 gap-0.5 h-72">
+            {piles[1]?.cards.slice(0, 6).map((cardInPool) => (
+                <Card
+                  key={cardInPool.card.id}
+                  cardInPool={cardInPool}
+                  size="medium"
+                />
+            ))}
+            {/* Show overflow indicator if more than 6 cards */}
+            {piles[1]?.cards && piles[1].cards.length > 6 && (
+              <div className="col-span-3 flex items-center justify-center text-gray-500 text-xs">
+                +{piles[1].cards.length - 6} more cards
+              </div>
+            )}
+            {selectedPile === piles[1]?.id && (
+              <div className="col-span-3 mt-3 text-center">
+                <div className="inline-flex items-center gap-2 text-green-600 font-medium">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  Selected
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
+      {/* Confirm Choice Button */}
       {isChoosingPhase && (
-        <div className="text-center">
+        <div className="card text-center">
           <button
             onClick={handleConfirmChoice}
             disabled={!selectedPile}
