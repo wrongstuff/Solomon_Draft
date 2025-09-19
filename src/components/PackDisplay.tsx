@@ -102,9 +102,9 @@ export const PackDisplay: React.FC<PackDisplayProps> = ({
       {/* Three Column Layout */}
       <div className="flex border border-black rounded-lg overflow-hidden shadow-lg">
         {/* Pile A (Left Column) */}
-        <div className="bg-green-200 p-2 flex-1 border-r border-black">
-          <h3 className="text-sm font-medium text-gray-800 text-center mb-2">Pile A</h3>
-          <div className={`grid grid-cols-3 gap-0 ${getZoneHeight(cardSize)}`}>
+        <div className="bg-green-200 p-1 flex-1 border-r border-black">
+          <h3 className="text-sm font-medium text-gray-800 text-center mb-1">Pile A</h3>
+          <div className={`grid grid-cols-3 ${getZoneHeight(cardSize)}`} style={{ gap: '0.0625rem 0.25rem' }}>
             {pile1CardObjects.slice(0, 6).map((cardInPool) => (
               <div
                 key={cardInPool.card.id}
@@ -136,9 +136,9 @@ export const PackDisplay: React.FC<PackDisplayProps> = ({
         </div>
 
         {/* Initial Pack Area (Middle Column) */}
-        <div className="bg-amber-200 p-2 flex-1 border-r border-black">
-          <h3 className="text-sm font-medium text-gray-800 text-center mb-2">Initial Pack Area</h3>
-          <div className={`grid grid-cols-3 gap-0 ${getZoneHeight(cardSize)}`}>
+        <div className="bg-amber-200 p-1 flex-1 border-r border-black">
+          <h3 className="text-sm font-medium text-gray-800 text-center mb-1">Initial Pack Area</h3>
+          <div className={`grid grid-cols-3 ${getZoneHeight(cardSize)}`} style={{ gap: '0.0625rem 0.25rem' }}>
             {unassignedCards.slice(0, 6).map((cardInPool) => (
               <div
                 key={cardInPool.card.id}
@@ -170,9 +170,9 @@ export const PackDisplay: React.FC<PackDisplayProps> = ({
         </div>
 
         {/* Pile B (Right Column) */}
-        <div className="bg-green-200 p-2 flex-1">
-          <h3 className="text-sm font-medium text-gray-800 text-center mb-2">Pile B</h3>
-          <div className={`grid grid-cols-3 gap-0 ${getZoneHeight(cardSize)}`}>
+        <div className="bg-green-200 p-1 flex-1">
+          <h3 className="text-sm font-medium text-gray-800 text-center mb-1">Pile B</h3>
+          <div className={`grid grid-cols-3 ${getZoneHeight(cardSize)}`} style={{ gap: '0.0625rem 0.25rem' }}>
             {pile2CardObjects.slice(0, 6).map((cardInPool) => (
               <div
                 key={cardInPool.card.id}

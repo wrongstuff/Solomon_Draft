@@ -41,8 +41,8 @@ export const CARD_DIMENSIONS: Record<CardSize, CardDimensions> = {
 export const getZoneHeight = (cardSize: CardSize): string => {
   const cardHeight = CARD_DIMENSIONS[cardSize].height;
   const rows = 2;
-  const padding = 1; // p-2 = 0.5rem on each side = 1rem total
-  const headerSpace = 2; // space for title and margins
+  const padding = 0.5; // p-1 = 0.25rem on each side = 0.5rem total
+  const headerSpace = 0.5; // space for title and margins (mb-1 = 0.25rem)
   
   const totalHeight = (cardHeight * rows) + padding + headerSpace;
   

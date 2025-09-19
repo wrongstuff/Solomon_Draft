@@ -70,7 +70,7 @@ export const PileSelector: React.FC<PileSelectorProps> = ({
         {/* Pile A (Left Column) */}
         <div 
           className={`
-            bg-green-200 p-2 flex-1 border-r border-black transition-all duration-200
+            bg-green-200 p-1 flex-1 border-r border-black transition-all duration-200
             ${selectedPile === piles[0]?.id 
               ? 'ring-2 ring-blue-500 ring-inset' 
               : isChoosingPhase 
@@ -80,8 +80,8 @@ export const PileSelector: React.FC<PileSelectorProps> = ({
           `}
           onClick={() => handlePileSelect(piles[0]?.id || '')}
         >
-          <h3 className="text-sm font-medium text-gray-800 text-center mb-2">Pile A</h3>
-          <div className={`grid grid-cols-3 gap-0 ${getZoneHeight(cardSize)}`}>
+          <h3 className="text-sm font-medium text-gray-800 text-center mb-1">Pile A</h3>
+          <div className={`grid grid-cols-3 ${getZoneHeight(cardSize)}`} style={{ gap: '0.0625rem 0.25rem' }}>
             {piles[0]?.cards.slice(0, 6).map((cardInPool) => (
                 <Card
                   key={cardInPool.card.id}
@@ -107,8 +107,8 @@ export const PileSelector: React.FC<PileSelectorProps> = ({
         </div>
 
         {/* Empty Middle Column for Visual Balance */}
-        <div className="bg-amber-200 p-2 flex-1 border-r border-black">
-          <h3 className="text-sm font-medium text-gray-800 text-center mb-2">Choose One</h3>
+        <div className="bg-amber-200 p-1 flex-1 border-r border-black">
+          <h3 className="text-sm font-medium text-gray-800 text-center mb-1">Choose One</h3>
           <div className="flex items-center justify-center h-32 text-gray-500 text-sm">
             Select Pile A or Pile B
           </div>
@@ -117,7 +117,7 @@ export const PileSelector: React.FC<PileSelectorProps> = ({
         {/* Pile B (Right Column) */}
         <div 
           className={`
-            bg-green-200 p-2 flex-1 transition-all duration-200
+            bg-green-200 p-1 flex-1 transition-all duration-200
             ${selectedPile === piles[1]?.id 
               ? 'ring-2 ring-green-500 ring-inset' 
               : isChoosingPhase 
@@ -127,8 +127,8 @@ export const PileSelector: React.FC<PileSelectorProps> = ({
           `}
           onClick={() => handlePileSelect(piles[1]?.id || '')}
         >
-          <h3 className="text-sm font-medium text-gray-800 text-center mb-2">Pile B</h3>
-          <div className={`grid grid-cols-3 gap-0 ${getZoneHeight(cardSize)}`}>
+          <h3 className="text-sm font-medium text-gray-800 text-center mb-1">Pile B</h3>
+          <div className={`grid grid-cols-3 ${getZoneHeight(cardSize)}`} style={{ gap: '0.0625rem 0.25rem' }}>
             {piles[1]?.cards.slice(0, 6).map((cardInPool) => (
                 <Card
                   key={cardInPool.card.id}
