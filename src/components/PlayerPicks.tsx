@@ -126,7 +126,7 @@ export const PlayerPicks: React.FC<PlayerPicksProps> = ({ player, picks, cardSiz
       </div>
 
       {/* Color Columns */}
-      <div className="grid grid-cols-7 gap-2">
+      <div className="flex gap-2">
         {colorOrder.map((colorIdentity) => {
           const cards = picks[colorIdentity] || [];
           const sortedCards = sortCards(cards);
@@ -134,8 +134,8 @@ export const PlayerPicks: React.FC<PlayerPicksProps> = ({ player, picks, cardSiz
           if (sortedCards.length === 0) return null;
 
           return (
-            <div key={colorIdentity} className="border rounded-lg p-2">
-              <div className="flex items-center justify-between mb-2">
+            <div key={colorIdentity} className="border rounded-lg p-2 flex-1 min-w-0">
+              <div className="text-center mb-2">
                 <h4 className={`font-medium text-sm ${getColorClass(colorIdentity)}`}>
                   {getColorDisplayName(colorIdentity)}
                 </h4>
