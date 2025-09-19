@@ -3,6 +3,7 @@ import { copyToClipboard, hashCardOrder } from '@/utils/seedUtils';
 
 interface DeckInputFormProps {
   onDeckInput: (url: string) => Promise<void>;
+  onStartSeededDraft: (seed: string, packSize: number, numberOfRounds: number) => Promise<void>;
   isLoading: boolean;
   parsedDeckList: { url: string; type: 'moxfield' | 'cubecobra'; cards: any[]; name?: string } | null;
 }
@@ -11,10 +12,12 @@ interface DeckInputFormProps {
  * Form component for inputting deck list URLs
  * Supports Moxfield and CubeCobra URLs
  */
-export const DeckInputForm: React.FC<DeckInputFormProps> = ({ onDeckInput, isLoading, parsedDeckList }) => {
+export const DeckInputForm: React.FC<DeckInputFormProps> = ({ onDeckInput, onStartSeededDraft, isLoading, parsedDeckList }) => {
   const [url, setUrl] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [generatedSeed, setGeneratedSeed] = useState<string>('');
+  const [customSeed, setCustomSeed] = useState<string>('');
+  const [isLoadingSeed, setIsLoadingSeed] = useState<boolean>(false);
 
   // Generate seed when deck list is loaded
   useEffect(() => {
@@ -35,6 +38,26 @@ export const DeckInputForm: React.FC<DeckInputFormProps> = ({ onDeckInput, isLoa
       // Could add a toast notification here
     } catch (error) {
       console.error('Failed to copy seed:', error);
+    }
+  };
+
+  /**
+   * Handles loading a seeded draft
+   */
+  const handleLoadSeededDraft = async (): Promise<void> => {
+    if (!customSeed.trim()) {
+      alert('Please enter a seed');
+      return;
+    }
+
+    setIsLoadingSeed(true);
+    try {
+      // Use default pack size and rounds for seeded drafts
+      await onStartSeededDraft(customSeed.trim(), 6, 15);
+    } catch (error) {
+      alert(`Failed to load seeded draft: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    } finally {
+      setIsLoadingSeed(false);
     }
   };
 
@@ -83,21 +106,27 @@ export const DeckInputForm: React.FC<DeckInputFormProps> = ({ onDeckInput, isLoa
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label htmlFor="deck-url" className="block text-sm font-medium text-gray-700 mb-2">
-            Deck List URL
+            Deck List URL - Supports Moxfield and CubeCobra URLs
           </label>
-          <input
-            id="deck-url"
-            type="url"
-            value={url}
-            onChange={handleUrlChange}
-            placeholder="https://www.moxfield.com/decks/... or https://cubecobra.com/cube/list/..."
-            className="input"
-            disabled={isLoading}
-            required
-          />
-          <p className="text-sm text-gray-500 mt-1">
-            Supports Moxfield deck URLs and CubeCobra cube URLs
-          </p>
+          <div className="flex gap-2">
+            <input
+              id="deck-url"
+              type="url"
+              value={url}
+              onChange={handleUrlChange}
+              placeholder="https://www.moxfield.com/decks/... or https://cubecobra.com/cube/list/..."
+              className="input flex-1"
+              disabled={isLoading}
+              required
+            />
+            <button 
+              type="submit" 
+              className="btn btn-primary"
+              disabled={isLoading || !url.trim()}
+            >
+              {isLoading ? 'Loading...' : 'Load'}
+            </button>
+          </div>
         </div>
 
         {error && (
@@ -106,13 +135,6 @@ export const DeckInputForm: React.FC<DeckInputFormProps> = ({ onDeckInput, isLoa
           </div>
         )}
 
-        <button
-          type="submit"
-          className="btn btn-primary w-full"
-          disabled={isLoading || !url.trim()}
-        >
-          {isLoading ? 'Loading...' : 'Load Deck List'}
-        </button>
       </form>
 
       {parsedDeckList && (
@@ -145,6 +167,33 @@ export const DeckInputForm: React.FC<DeckInputFormProps> = ({ onDeckInput, isLoa
           )}
         </div>
       )}
+
+      {/* Seed Input Section */}
+      <div className="mt-6">
+        <div>
+          <label htmlFor="seed-input" className="block text-sm font-medium text-gray-700 mb-2">
+            Draft Seed
+          </label>
+          <div className="flex gap-2">
+            <input
+              id="seed-input"
+              type="text"
+              value={customSeed}
+              onChange={(e) => setCustomSeed(e.target.value)}
+              placeholder="Paste a seed to recreate an existing draft order"
+              className="input flex-1"
+              disabled={isLoading || isLoadingSeed}
+            />
+            <button 
+              onClick={handleLoadSeededDraft}
+              disabled={!customSeed.trim() || isLoading || isLoadingSeed}
+              className="btn btn-primary"
+            >
+              {isLoadingSeed ? 'Loading...' : 'Load'}
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
