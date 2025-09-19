@@ -125,13 +125,11 @@ export const PlayerPicks: React.FC<PlayerPicksProps> = ({ player, picks, cardSiz
         ))}
       </div>
 
-      {/* Color Columns */}
+      {/* Color Columns - Always show all 7 columns */}
       <div className="flex gap-2">
         {colorOrder.map((colorIdentity) => {
           const cards = picks[colorIdentity] || [];
           const sortedCards = sortCards(cards);
-
-          if (sortedCards.length === 0) return null;
 
           return (
             <div key={colorIdentity} className="border rounded-lg p-2 flex-1 min-w-0">
@@ -145,47 +143,53 @@ export const PlayerPicks: React.FC<PlayerPicksProps> = ({ player, picks, cardSiz
               </div>
               
               <div className="relative" style={{ height: '12rem' }}>
-                {sortedCards.map((cardInPool, index) => {
-                  const isBottomCard = index === sortedCards.length - 1;
-                  return (
-                    <div 
-                      key={cardInPool.card.id} 
-                      className="absolute w-full group cursor-pointer transition-all duration-200"
-                      style={{ 
-                        top: `${index * 2}rem`, // 2rem spacing for more art visibility
-                        zIndex: isBottomCard ? 10 : index // Bottom card always on top (z-10), others by index
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.zIndex = '20';
-                        // Show 100% of the card when hovering
-                        const cardDiv = e.currentTarget.querySelector('div') as HTMLElement;
-                        if (cardDiv) {
-                          cardDiv.style.height = '12rem';
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.zIndex = isBottomCard ? '10' : index.toString();
-                        // Return to original height when not hovering
-                        const cardDiv = e.currentTarget.querySelector('div') as HTMLElement;
-                        if (cardDiv) {
-                          cardDiv.style.height = isBottomCard ? '12rem' : '3rem';
-                        }
-                      }}
-                    >
+                {sortedCards.length > 0 ? (
+                  sortedCards.map((cardInPool, index) => {
+                    const isBottomCard = index === sortedCards.length - 1;
+                    return (
                       <div 
-                        className="overflow-hidden rounded"
+                        key={cardInPool.card.id} 
+                        className="absolute w-full group cursor-pointer transition-all duration-200"
                         style={{ 
-                          height: isBottomCard ? '12rem' : '3rem' // Full height for bottom card, 25% for others
+                          top: `${index * 2}rem`, // 2rem spacing for more art visibility
+                          zIndex: isBottomCard ? 10 : index // Bottom card always on top (z-10), others by index
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.zIndex = '20';
+                          // Show 100% of the card when hovering
+                          const cardDiv = e.currentTarget.querySelector('div') as HTMLElement;
+                          if (cardDiv) {
+                            cardDiv.style.height = '12rem';
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.zIndex = isBottomCard ? '10' : index.toString();
+                          // Return to original height when not hovering
+                          const cardDiv = e.currentTarget.querySelector('div') as HTMLElement;
+                          if (cardDiv) {
+                            cardDiv.style.height = isBottomCard ? '12rem' : '3rem';
+                          }
                         }}
                       >
-                        <Card
-                          cardInPool={cardInPool}
-                          size="large"
-                        />
+                        <div 
+                          className="overflow-hidden rounded"
+                          style={{ 
+                            height: isBottomCard ? '12rem' : '3rem' // Full height for bottom card, 25% for others
+                          }}
+                        >
+                          <Card
+                            cardInPool={cardInPool}
+                            size="large"
+                          />
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })
+                ) : (
+                  <div className="flex items-center justify-center h-full text-gray-400 text-xs">
+                    Empty
+                  </div>
+                )}
               </div>
             </div>
           );
