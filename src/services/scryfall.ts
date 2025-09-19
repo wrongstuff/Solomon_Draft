@@ -114,12 +114,15 @@ class ScryfallService {
   async searchCards(cardNames: string[]): Promise<Card[]> {
     if (cardNames.length === 0) return [];
     
+    // Preprocess card names to handle split cards
+    const processedCardNames = this.preprocessCardNames(cardNames);
+    
     // Use collection endpoint for bulk searches (up to 75 cards per request)
     const batchSize = 75; // Scryfall's collection endpoint limit
     const cards: Card[] = [];
     
-    for (let i = 0; i < cardNames.length; i += batchSize) {
-      const batch = cardNames.slice(i, i + batchSize);
+    for (let i = 0; i < processedCardNames.length; i += batchSize) {
+      const batch = processedCardNames.slice(i, i + batchSize);
       try {
         const batchCards = await this.searchCardsBatch(batch);
         cards.push(...batchCards);
@@ -132,6 +135,33 @@ class ScryfallService {
     }
     
     return cards;
+  }
+
+  /**
+   * Preprocesses card names to handle split cards and other special cases
+   * @param cardNames - Array of card names to preprocess
+   * @returns Array of processed card names
+   */
+  private preprocessCardNames(cardNames: string[]): string[] {
+    const processedNames: string[] = [];
+    
+    for (const name of cardNames) {
+      // Handle split cards like "Find // Finality" by trying both halves
+      if (name.includes(' // ')) {
+        const halves = name.split(' // ');
+        if (halves.length === 2) {
+          // Try both halves, Scryfall will return the full split card
+          processedNames.push(halves[0].trim());
+          processedNames.push(halves[1].trim());
+        } else {
+          processedNames.push(name);
+        }
+      } else {
+        processedNames.push(name);
+      }
+    }
+    
+    return processedNames;
   }
 
   /**
@@ -269,16 +299,62 @@ class ScryfallService {
     // Create a map for quick lookup when matching cards to quantities
     const cardMap = new Map(cards.map(card => [card.name, card]));
     
-    return cardEntries
+    const result = cardEntries
       .map(entry => {
-        const card = cardMap.get(entry.name);
+        // Try exact match first
+        let card = cardMap.get(entry.name);
+        
+        // If not found, try case-insensitive match
         if (!card) {
-          console.warn(`Card not found: ${entry.name}`);
+          for (const [cardName, cardData] of cardMap.entries()) {
+            if (cardName.toLowerCase() === entry.name.toLowerCase()) {
+              card = cardData;
+              break;
+            }
+          }
+        }
+        
+        // If still not found, try partial match (for cards with different punctuation)
+        if (!card) {
+          const normalizedEntryName = entry.name.toLowerCase().replace(/[^\w\s]/g, '');
+          for (const [cardName, cardData] of cardMap.entries()) {
+            const normalizedCardName = cardName.toLowerCase().replace(/[^\w\s]/g, '');
+            if (normalizedCardName === normalizedEntryName) {
+              card = cardData;
+              console.log(`Found card with partial match: "${entry.name}" -> "${cardName}"`);
+              break;
+            }
+          }
+        }
+        
+        // If still not found, try split card matching (for cards like "Kellan, Inquisitive Prodigy" -> "Kellan, Inquisitive Prodigy // Tail the Suspect")
+        if (!card) {
+          for (const [cardName, cardData] of cardMap.entries()) {
+            // Check if the card name starts with our entry name (for split cards)
+            if (cardName.toLowerCase().startsWith(entry.name.toLowerCase())) {
+              card = cardData;
+              console.log(`Found card with split card match: "${entry.name}" -> "${cardName}"`);
+              break;
+            }
+          }
+        }
+        
+        if (!card) {
+          console.warn(`Card not found in Scryfall: "${entry.name}"`);
           return null;
         }
         return { card, quantity: entry.quantity };
       })
       .filter((entry): entry is CardInPool => entry !== null);
+    
+    // Log summary of missing cards
+    const missingCount = cardEntries.length - result.length;
+    if (missingCount > 0) {
+      console.warn(`Warning: ${missingCount} cards were not found in Scryfall and were excluded from the deck list`);
+      console.warn(`Total cards requested: ${cardEntries.length}, Cards found: ${result.length}`);
+    }
+    
+    return result;
   }
 }
 
