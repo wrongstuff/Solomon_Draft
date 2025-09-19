@@ -27,7 +27,6 @@ export const PackDisplay: React.FC<PackDisplayProps> = ({
   cardSize = 'large',
 }) => {
   const isSplittingPhase = currentPhase === 'P1-split' || currentPhase === 'P2-split';
-  const allCardsAssigned = pile1Cards.length + pile2Cards.length === pack.cards.length;
   const bothPilesHaveCards = pile1Cards.length > 0 && pile2Cards.length > 0;
 
   /**
@@ -136,7 +135,7 @@ export const PackDisplay: React.FC<PackDisplayProps> = ({
         </div>
 
         {/* Initial Pack Area (Middle Column) */}
-        <div className="bg-amber-200 p-1 flex-1 border-r border-black">
+        <div className="bg-amber-200 p-1 flex-1 border-r border-black relative">
           <h3 className="text-sm font-medium text-gray-800 text-center mb-1">Initial Pack Area</h3>
           <div className={`grid grid-cols-3 ${getZoneHeight(cardSize)}`} style={{ gap: '0.0625rem 0.25rem' }}>
             {unassignedCards.slice(0, 6).map((cardInPool) => (
@@ -161,12 +160,34 @@ export const PackDisplay: React.FC<PackDisplayProps> = ({
                 +{unassignedCards.length - 6} more cards
               </div>
             )}
-            {unassignedCards.length === 0 && (
+            {unassignedCards.length === 0 && !isSplittingPhase && (
               <div className="col-span-3 flex items-center justify-center h-32 text-gray-500 text-sm">
                 All cards assigned
               </div>
             )}
           </div>
+          {/* Show Split Pack button when all cards are assigned - positioned absolutely */}
+          {unassignedCards.length === 0 && isSplittingPhase && (
+            <div className="absolute top-4 left-1 right-1 bottom-0 flex items-center justify-center">
+              <div className="flex flex-col items-center justify-center">
+                <button
+                  onClick={onSplitPack}
+                  disabled={!bothPilesHaveCards}
+                  className={`
+                    btn btn-primary px-6 py-2 text-sm
+                    ${!bothPilesHaveCards ? 'opacity-50 cursor-not-allowed' : ''}
+                  `}
+                >
+                  Split Pack
+                </button>
+                {!bothPilesHaveCards && (
+                  <p className="text-xs text-red-600 mt-1 text-center">
+                    Each pile must have at least one card
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Pile B (Right Column) */}
@@ -204,31 +225,6 @@ export const PackDisplay: React.FC<PackDisplayProps> = ({
         </div>
       </div>
 
-      {/* Split Pack Button */}
-      {isSplittingPhase && (
-        <div className="card text-center">
-          <button
-            onClick={onSplitPack}
-            disabled={!allCardsAssigned || !bothPilesHaveCards}
-            className={`
-              btn btn-primary px-8 py-3
-              ${!allCardsAssigned || !bothPilesHaveCards ? 'opacity-50 cursor-not-allowed' : ''}
-            `}
-          >
-            Split Pack
-          </button>
-          {!allCardsAssigned && (
-            <p className="text-sm text-red-600 mt-2">
-              All cards must be assigned to piles
-            </p>
-          )}
-          {!bothPilesHaveCards && allCardsAssigned && (
-            <p className="text-sm text-red-600 mt-2">
-              Each pile must contain at least one card
-            </p>
-          )}
-        </div>
-      )}
     </div>
   );
 };
