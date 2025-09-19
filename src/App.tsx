@@ -218,7 +218,7 @@ const App: React.FC = () => {
                    and both women insisting the child was theirs, Solomon faced an impossible decision.
                  </p>
                  <p>
-                   In his wisdom, Solomon ordered the baby to be cut in half so each woman could have a portion. Something something *religion*
+                   In his wisdom, Solomon ordered the baby to be cut in half so each woman could have a portion. Something something "religion"
                  </p>
                   
                  <h3 className="text-lg font-semibold mt-6 mb-3 text-gray-800">How Solomon Draft Works</h3>
