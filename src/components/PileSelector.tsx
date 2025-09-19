@@ -34,19 +34,6 @@ export const PileSelector: React.FC<PileSelectorProps> = ({
 
   return (
     <div className="space-y-4">
-      {/* Instructions */}
-      <div className="card">
-        <div className="mb-4">
-          <h3 className="text-lg font-semibold mb-2">Choose a Pile</h3>
-          <p className="text-gray-600">
-            {isChoosingPhase 
-              ? 'Click "Select" on the pile you want to add to your collection'
-              : 'Waiting for pile selection...'
-            }
-          </p>
-        </div>
-      </div>
-
       {/* Three Column Layout */}
       <div className="flex border border-black rounded-lg overflow-hidden shadow-lg">
         {/* Pile A (Left Column) */}
@@ -80,11 +67,15 @@ export const PileSelector: React.FC<PileSelectorProps> = ({
           )}
         </div>
 
-        {/* Empty Middle Column for Visual Balance */}
-        <div className="bg-amber-200 p-1 flex-1 border-r border-black">
-          <h3 className="text-sm font-medium text-gray-800 text-center mb-1">Choose One</h3>
-          <div className="flex items-center justify-center h-32 text-gray-500 text-sm">
-            Select Pile A or Pile B
+        {/* Middle Column with Instructions */}
+        <div className="bg-amber-200 p-1 flex-1 border-r border-black flex flex-col">
+          <div className="flex-1 flex items-center justify-center text-center">
+            <p className="text-gray-700 text-sm">
+              {isChoosingPhase 
+                ? 'Click "Select" on the pile you want to add to your collection'
+                : 'Waiting for pile selection...'
+              }
+            </p>
           </div>
         </div>
 

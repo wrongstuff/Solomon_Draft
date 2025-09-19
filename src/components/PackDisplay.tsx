@@ -52,16 +52,6 @@ export const PackDisplay: React.FC<PackDisplayProps> = ({
     }
   };
 
-  /**
-   * Gets the visual state of a card based on its pile assignment
-   * @param cardId - ID of the card
-   * @returns Visual state string
-   */
-  const getCardState = (cardId: string): 'unassigned' | 'pile1' | 'pile2' => {
-    if (pile1Cards.includes(cardId)) return 'pile1';
-    if (pile2Cards.includes(cardId)) return 'pile2';
-    return 'unassigned';
-  };
 
   // Separate cards by their current state
   const unassignedCards = pack.cards.filter(cardInPool => 
@@ -76,28 +66,6 @@ export const PackDisplay: React.FC<PackDisplayProps> = ({
 
   return (
     <div className="space-y-4">
-      {/* Instructions */}
-      {isSplittingPhase && (
-        <div className="card">
-          <div className="p-4 bg-blue-50 border border-blue-200 rounded">
-            <h4 className="font-medium text-blue-900 mb-2">Split Instructions</h4>
-            <p className="text-sm text-blue-800">
-              Click cards to assign them to Pile A or Pile B. Each pile must have at least one card.
-            </p>
-            <div className="mt-2 flex gap-4 text-sm">
-              <span className="flex items-center gap-1">
-                <div className="w-3 h-3 bg-blue-500 rounded"></div>
-                Pile A: {pile1Cards.length} cards
-              </span>
-              <span className="flex items-center gap-1">
-                <div className="w-3 h-3 bg-green-500 rounded"></div>
-                Pile B: {pile2Cards.length} cards
-              </span>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Three Column Layout */}
       <div className="flex border border-black rounded-lg overflow-hidden shadow-lg">
         {/* Pile A (Left Column) */}
@@ -217,8 +185,12 @@ export const PackDisplay: React.FC<PackDisplayProps> = ({
               </div>
             )}
             {pile2CardObjects.length === 0 && (
-              <div className="col-span-3 flex items-center justify-center h-32 text-gray-500 text-sm">
-                No cards assigned
+              <div className="col-span-3 flex items-start justify-start h-32 text-gray-500 text-xs px-1 pt-4">
+                <div className="text-left" style={{ fontSize: '10px', lineHeight: '1.2' }}>
+                  <div>Click cards to assign them to Piles.</div>
+                  <div>Each pile must have at least one card.</div>
+                  <div>All cards must be assigned.</div>
+                </div>
               </div>
             )}
           </div>

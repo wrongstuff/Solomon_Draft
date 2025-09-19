@@ -141,12 +141,6 @@ const App: React.FC = () => {
               onReset={handleReset}
             />
             
-            <DraftHistory 
-              history={gameState.draft.history}
-              isVisible={showHistory}
-              onToggle={toggleHistory}
-            />
-            
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               <PlayerPicks 
                 player="P1" 
@@ -163,6 +157,12 @@ const App: React.FC = () => {
                 p2Picks={gameState.draft.p2Picks}
               />
             )}
+            
+            <DraftHistory 
+              history={gameState.draft.history}
+              isVisible={showHistory}
+              onToggle={toggleHistory}
+            />
           </div>
         )}
       </main>
