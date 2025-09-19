@@ -53,4 +53,5 @@ export interface DeckListInput {
   url: string;
   type: 'moxfield' | 'cubecobra';
   cards: CardInPool[];
+  name?: string;
 }

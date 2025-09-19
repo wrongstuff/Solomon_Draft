@@ -153,7 +153,7 @@ export const PlayerPicks: React.FC<PlayerPicksProps> = ({ player, picks, cardSiz
               </div>
               
               <div className="relative" style={{ 
-                height: `${getMaxColumnHeight()}rem` 
+                height: `${Math.max(12, sortedCards.length * 2 + 10)}rem` 
               }}>
                 {sortedCards.length > 0 ? (
                   sortedCards.map((cardInPool, index) => {

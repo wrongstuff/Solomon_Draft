@@ -44,7 +44,7 @@ const App: React.FC = () => {
   }, []);
 
   /**
-   * Starts a new draft with the given settings
+   * Starts a new draft with the given settings and automatically deals the first pack
    * @param packSize - Number of cards per pack
    * @param numberOfRounds - Number of rounds to draft
    */
@@ -61,8 +61,13 @@ const App: React.FC = () => {
     }
 
     try {
+      // Create the draft
       const draft = DraftService.createDraft(parsedDeckList, packSize, numberOfRounds);
-      setGameState(prev => ({ ...prev, draft, error: null }));
+      
+      // Automatically deal the first pack
+      const draftWithFirstPack = DraftService.performDraftAction(draft, 'start-round', {});
+      
+      setGameState(prev => ({ ...prev, draft: draftWithFirstPack, error: null }));
     } catch (error) {
       setGameState(prev => ({ 
         ...prev, 
@@ -126,11 +131,13 @@ const App: React.FC = () => {
             <DeckInputForm 
               onDeckInput={handleDeckInput}
               isLoading={gameState.isLoading}
+              parsedDeckList={parsedDeckList}
             />
             <DraftSettings 
               onStartDraft={handleStartDraft}
               isLoading={gameState.isLoading}
               hasDeckList={!!parsedDeckList}
+              parsedDeckList={parsedDeckList}
             />
           </div>
         ) : (

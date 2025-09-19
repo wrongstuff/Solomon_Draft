@@ -3,13 +3,14 @@ import React, { useState } from 'react';
 interface DeckInputFormProps {
   onDeckInput: (url: string) => Promise<void>;
   isLoading: boolean;
+  parsedDeckList: { url: string; type: 'moxfield' | 'cubecobra'; cards: any[]; name?: string } | null;
 }
 
 /**
  * Form component for inputting deck list URLs
  * Supports Moxfield and CubeCobra URLs
  */
-export const DeckInputForm: React.FC<DeckInputFormProps> = ({ onDeckInput, isLoading }) => {
+export const DeckInputForm: React.FC<DeckInputFormProps> = ({ onDeckInput, isLoading, parsedDeckList }) => {
   const [url, setUrl] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
 
@@ -89,6 +90,17 @@ export const DeckInputForm: React.FC<DeckInputFormProps> = ({ onDeckInput, isLoa
           {isLoading ? 'Loading...' : 'Load Deck List'}
         </button>
       </form>
+
+      {parsedDeckList && (
+        <div className="mt-6 bg-green-50 border border-green-200 rounded p-4">
+          <h3 className="font-medium text-green-900 mb-2">✓ Deck List Loaded Successfully</h3>
+          <div className="text-sm text-green-800 space-y-1">
+            <p><strong>Source:</strong> {parsedDeckList.type === 'moxfield' ? 'Moxfield' : 'CubeCobra'}</p>
+            <p><strong>Total Cards:</strong> {parsedDeckList.cards.length}</p>
+            <p className="text-green-600">Ready to configure draft settings below!</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

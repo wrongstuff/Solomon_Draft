@@ -4,13 +4,14 @@ interface DraftSettingsProps {
   onStartDraft: (packSize: number, numberOfRounds: number) => void;
   isLoading: boolean;
   hasDeckList: boolean;
+  parsedDeckList: { url: string; type: 'moxfield' | 'cubecobra'; cards: any[]; name?: string } | null;
 }
 
 /**
  * Component for configuring draft settings before starting
  * Allows players to set pack size and number of rounds
  */
-export const DraftSettings: React.FC<DraftSettingsProps> = ({ onStartDraft, isLoading, hasDeckList }) => {
+export const DraftSettings: React.FC<DraftSettingsProps> = ({ onStartDraft, isLoading, hasDeckList, parsedDeckList }) => {
   const [packSize, setPackSize] = useState<number>(6);
   const [numberOfRounds, setNumberOfRounds] = useState<number>(15);
 
@@ -49,6 +50,11 @@ export const DraftSettings: React.FC<DraftSettingsProps> = ({ onStartDraft, isLo
   };
 
   const totalCardsNeeded = 2 * packSize * numberOfRounds;
+  const availableCards = parsedDeckList?.cards.length || 0;
+  const hasEnoughCards = availableCards >= totalCardsNeeded;
+  const validationMessage = hasEnoughCards 
+    ? `✓ Sufficient cards available (${availableCards} >= ${totalCardsNeeded})`
+    : `⚠️ Not enough cards! Need ${totalCardsNeeded} but only have ${availableCards}`;
 
   return (
     <div className="card">
@@ -95,21 +101,24 @@ export const DraftSettings: React.FC<DraftSettingsProps> = ({ onStartDraft, isLo
           </div>
         </div>
 
-        <div className="bg-blue-50 border border-blue-200 rounded p-4">
-          <h3 className="font-medium text-blue-900 mb-2">Draft Configuration</h3>
-          <div className="text-sm text-blue-800 space-y-1">
+        <div className={`border rounded p-4 ${hasEnoughCards ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
+          <h3 className={`font-medium mb-2 ${hasEnoughCards ? 'text-green-900' : 'text-red-900'}`}>
+            Draft Configuration
+          </h3>
+          <div className={`text-sm space-y-1 ${hasEnoughCards ? 'text-green-800' : 'text-red-800'}`}>
             <p>• Total cards needed: <strong>{totalCardsNeeded}</strong></p>
             <p>• Cards per round: <strong>{2 * packSize}</strong> (2 packs per round)</p>
             <p>• Total rounds: <strong>{numberOfRounds}</strong></p>
+            <p className="font-medium">{validationMessage}</p>
           </div>
         </div>
 
         <button
           onClick={handleStartDraft}
-          className="btn btn-success w-full"
-          disabled={isLoading || !hasDeckList}
+          className={`btn w-full ${hasEnoughCards ? 'btn-success' : 'btn-disabled'}`}
+          disabled={isLoading || !hasDeckList || !hasEnoughCards}
         >
-          {isLoading ? 'Starting Draft...' : 'Start Draft'}
+          {isLoading ? 'Starting Draft...' : hasEnoughCards ? 'Start Draft' : 'Not Enough Cards'}
         </button>
       </div>
     </div>
