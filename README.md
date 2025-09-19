@@ -109,3 +109,4 @@ The Scryfall integration includes proper rate limiting to respect their API guid
 MIT License - see LICENSE file for details
 
 
+

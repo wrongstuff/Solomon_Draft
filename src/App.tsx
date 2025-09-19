@@ -209,20 +209,54 @@ const App: React.FC = () => {
         {!gameState.draft ? (
           <div className="space-y-8">
             <div className="grid grid-cols-2 gap-6">
-              {/* Left Column - Placeholder */}
-              <div className="card">
-                <h2 className="text-xl font-bold mb-4">Coming Soon</h2>
-                <div className="space-y-4">
-                  <p className="text-gray-600">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor 
-                    incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud 
-                    exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                  </p>
-                  <p className="text-gray-600">
-                    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
-                    fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in 
-                    culpa qui officia deserunt mollit anim id est laborum.
-                  </p>
+              {/* Left Column - Story and Rules */}
+             <div className="card">
+               <h2 className="text-xl font-bold mb-4">The Story of King Solomon</h2>
+               <div className="space-y-4 text-gray-700">
+                 <p>
+                   Two women came before King Solomon, each claiming to be the mother of the same baby. With no witnesses 
+                   and both women insisting the child was theirs, Solomon faced an impossible decision.
+                 </p>
+                 <p>
+                   In his wisdom, Solomon ordered the baby to be cut in half so each woman could have a portion. Something something *religion*
+                 </p>
+                  
+                 <h3 className="text-lg font-semibold mt-6 mb-3 text-gray-800">How Solomon Draft Works</h3>
+                  
+                  <div className="space-y-3 text-sm">
+                    <div>
+                      <strong>1. Pack Splitting:</strong> One player splits each pack into two piles. 
+                      They must assign every card to a pile, and each pile must have at least one card.
+                    </div>
+                    <div>
+                      <strong>2. Pile Choosing:</strong> The other player chooses which pile to add to their collection. 
+                      The remaining pile goes to the splitter.
+                    </div>
+                    <div>
+                      <strong>3. Alternating Roles:</strong> Players alternate who splits and who chooses each pack. 
+                      This ensures fairness and prevents one player from always having the advantage.
+                    </div>
+                    <div>
+                      <strong>4. Tension</strong> Do you try to cut your opponent off of something, or to push them into a direction 
+                      so you get what you want?
+                    </div>
+                    <div>
+                      <strong>5. Commander Limited</strong> This format is designed to be played as commander limited (30 life). 
+                      Any two monocolored creatures can be used as commanders, however, all cards in your 60 card deck must
+                      be playable with those commanders and adhere to their color identity. This constraint is the core of the format, as 
+                      just because you drafted cards doesn't mean you can play them. Staying flexible early is important, lots of pivoting
+                      is key.
+                    </div>
+                    
+                  </div>
+                  
+                  <div className="mt-6 text-center">
+                    <img 
+                      src="/midas chop.png" 
+                      alt="Midas Chop" 
+                      className="mx-auto max-w-full h-auto rounded-lg shadow-md"
+                    />
+                  </div>
                 </div>
               </div>
 
