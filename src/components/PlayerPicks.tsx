@@ -97,17 +97,17 @@ export const PlayerPicks: React.FC<PlayerPicksProps> = ({ player, picks, cardSiz
   const colorOrder: ColorIdentity[] = ['W', 'U', 'B', 'R', 'G', 'C', 'M'];
 
   return (
-    <div className="card">
+    <div className="card bg-gray-800">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold">{player} Picks</h3>
-        <div className="text-sm text-gray-600">
+        <h3 className="text-lg font-semibold text-black">{player} Picks</h3>
+        <div className="text-sm text-black">
           Total: {getTotalCardCount()} cards
         </div>
       </div>
 
       {/* Sort Controls */}
       <div className="mb-4 flex gap-2">
-        <span className="text-sm text-gray-600">Sort by:</span>
+        <span className="text-sm text-black">Sort by:</span>
         {(['default', 'cmc', 'alphabetical'] as const).map((sort) => (
           <button
             key={sort}
@@ -134,10 +134,10 @@ export const PlayerPicks: React.FC<PlayerPicksProps> = ({ player, picks, cardSiz
           return (
             <div key={colorIdentity} className="border rounded-lg p-2 flex-1 min-w-0">
               <div className="text-center mb-2">
-                <h4 className={`font-medium text-sm ${getColorClass(colorIdentity)}`}>
+                <h4 className="font-medium text-sm text-black">
                   {getColorDisplayName(colorIdentity)}
                 </h4>
-                <span className="text-xs text-gray-500">
+                <span className="text-xs text-black">
                   {sortedCards.length}
                 </span>
               </div>
@@ -186,7 +186,7 @@ export const PlayerPicks: React.FC<PlayerPicksProps> = ({ player, picks, cardSiz
                     );
                   })
                 ) : (
-                  <div className="flex items-center justify-center h-full text-gray-400 text-xs">
+                  <div className="flex items-center justify-center h-full text-black text-xs">
                     Empty
                   </div>
                 )}
@@ -197,7 +197,7 @@ export const PlayerPicks: React.FC<PlayerPicksProps> = ({ player, picks, cardSiz
       </div>
 
       {getTotalCardCount() === 0 && (
-        <div className="text-center text-gray-500 py-8">
+        <div className="text-center text-black py-8">
           No cards drafted yet
         </div>
       )}

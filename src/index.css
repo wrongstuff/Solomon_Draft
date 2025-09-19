@@ -107,6 +107,10 @@ textarea.input {
   margin-bottom: 16px;
 }
 
+.card.bg-gray-800 {
+  background: #e5e7eb;
+}
+
 .grid {
   display: grid;
   gap: 16px;
