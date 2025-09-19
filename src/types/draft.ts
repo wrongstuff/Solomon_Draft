@@ -34,6 +34,7 @@ export interface DraftState {
   settings: DraftSettings;
   cardsInPool: CardInPool[];
   currentRound: number;
+  currentPack: number; // 1 or 2 within the current round
   currentPhase: 'P1-split' | 'P1-choose' | 'P2-split' | 'P2-choose';
   activePack: Pack | null;
   p1Picks: PlayerPicks;

@@ -96,12 +96,12 @@ export const DraftInterface: React.FC<DraftInterfaceProps> = ({
    * Gets the current phase description for display
    */
   const getPhaseDescription = (): string => {
-    const { currentPhase, currentRound, settings } = draft;
+    const { currentPhase, currentRound, currentPack, settings } = draft;
     const phaseDescriptions = {
-      'P1-split': `Round ${currentRound}/${settings.numberOfRounds} - Player 1: Split Pack`,
-      'P1-choose': `Round ${currentRound}/${settings.numberOfRounds} - Player 1: Choose Pile`,
-      'P2-split': `Round ${currentRound}/${settings.numberOfRounds} - Player 2: Split Pack`,
-      'P2-choose': `Round ${currentRound}/${settings.numberOfRounds} - Player 2: Choose Pile`,
+      'P1-split': `Round ${currentRound}/${settings.numberOfRounds}, Pack ${currentPack}/2 - Player 1: Split Pack`,
+      'P1-choose': `Round ${currentRound}/${settings.numberOfRounds}, Pack ${currentPack}/2 - Player 1: Choose Pile`,
+      'P2-split': `Round ${currentRound}/${settings.numberOfRounds}, Pack ${currentPack}/2 - Player 2: Split Pack`,
+      'P2-choose': `Round ${currentRound}/${settings.numberOfRounds}, Pack ${currentPack}/2 - Player 2: Choose Pile`,
     };
     return phaseDescriptions[currentPhase];
   };

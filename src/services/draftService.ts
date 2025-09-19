@@ -38,6 +38,7 @@ export class DraftService {
       settings,
       cardsInPool,
       currentRound: 1,
+      currentPack: 1,
       currentPhase: 'P1-split',
       activePack: null,
       p1Picks: this.initializePlayerPicks(),
@@ -223,17 +224,41 @@ export class DraftService {
       }
     );
 
-    // Determine next phase
-    const nextPhase = isP1Choosing ? 'P2-split' : 'P1-split';
-    const nextRound = isP1Choosing ? draft.currentRound + 1 : draft.currentRound;
+    // Determine next phase, pack, and round
+    // Odd packs (1, 3, 5...): P1 splits → P2 chooses
+    // Even packs (2, 4, 6...): P2 splits → P1 chooses
+    let nextPhase: 'P1-split' | 'P1-choose' | 'P2-split' | 'P2-choose';
+    let nextPack: number;
+    let nextRound: number;
 
-    return {
+    if (draft.currentPack === 1) {
+      // Just finished pack 1, move to pack 2 with P2 splitting
+      nextPhase = 'P2-split';
+      nextPack = 2;
+      nextRound = draft.currentRound;
+    } else {
+      // Just finished pack 2, move to next round with P1 splitting pack 1
+      nextPhase = 'P1-split';
+      nextPack = 1;
+      nextRound = draft.currentRound + 1;
+    }
+
+    // Create updated draft state with pile choice
+    const draftAfterChoice = {
       ...updatedDraft,
       currentPhase: nextPhase,
+      currentPack: nextPack,
       currentRound: nextRound,
       activePack: null,
       history: [...updatedDraft.history, historyEntry],
     };
+
+    // If the draft is not complete, automatically deal the next pack
+    if (!draftAfterChoice.isComplete) {
+      return this.startRound(draftAfterChoice);
+    }
+
+    return draftAfterChoice;
   }
 
   /**
