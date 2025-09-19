@@ -126,7 +126,7 @@ export const PlayerPicks: React.FC<PlayerPicksProps> = ({ player, picks, cardSiz
       </div>
 
       {/* Color Columns */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      <div className="grid grid-cols-7 gap-2">
         {colorOrder.map((colorIdentity) => {
           const cards = picks[colorIdentity] || [];
           const sortedCards = sortCards(cards);
@@ -134,28 +134,58 @@ export const PlayerPicks: React.FC<PlayerPicksProps> = ({ player, picks, cardSiz
           if (sortedCards.length === 0) return null;
 
           return (
-            <div key={colorIdentity} className="border rounded-lg p-3">
-              <div className="flex items-center justify-between mb-3">
-                <h4 className={`font-medium ${getColorClass(colorIdentity)}`}>
+            <div key={colorIdentity} className="border rounded-lg p-2">
+              <div className="flex items-center justify-between mb-2">
+                <h4 className={`font-medium text-sm ${getColorClass(colorIdentity)}`}>
                   {getColorDisplayName(colorIdentity)}
                 </h4>
-                <span className="text-sm text-gray-500">
+                <span className="text-xs text-gray-500">
                   {sortedCards.length}
                 </span>
               </div>
               
-              <div className="grid" style={{ 
-                gridTemplateColumns: 'repeat(8, 1fr)', 
-                gap: '0.0625rem 0.25rem' 
-              }}>
-                {sortedCards.map((cardInPool) => (
-                  <div key={cardInPool.card.id} className="w-full">
-                    <Card
-                      cardInPool={cardInPool}
-                      size={cardSize}
-                    />
-                  </div>
-                ))}
+              <div className="relative" style={{ height: '12rem' }}>
+                {sortedCards.map((cardInPool, index) => {
+                  const isBottomCard = index === sortedCards.length - 1;
+                  return (
+                    <div 
+                      key={cardInPool.card.id} 
+                      className="absolute w-full group cursor-pointer transition-all duration-200"
+                      style={{ 
+                        top: `${index * 2}rem`, // 2rem spacing for more art visibility
+                        zIndex: isBottomCard ? 10 : index // Bottom card always on top (z-10), others by index
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.zIndex = '20';
+                        // Show 100% of the card when hovering
+                        const cardDiv = e.currentTarget.querySelector('div') as HTMLElement;
+                        if (cardDiv) {
+                          cardDiv.style.height = '12rem';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.zIndex = isBottomCard ? '10' : index.toString();
+                        // Return to original height when not hovering
+                        const cardDiv = e.currentTarget.querySelector('div') as HTMLElement;
+                        if (cardDiv) {
+                          cardDiv.style.height = isBottomCard ? '12rem' : '3rem';
+                        }
+                      }}
+                    >
+                      <div 
+                        className="overflow-hidden rounded"
+                        style={{ 
+                          height: isBottomCard ? '12rem' : '3rem' // Full height for bottom card, 25% for others
+                        }}
+                      >
+                        <Card
+                          cardInPool={cardInPool}
+                          size="large"
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           );
