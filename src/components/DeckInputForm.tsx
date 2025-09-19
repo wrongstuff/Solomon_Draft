@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { copyToClipboard, hashCardOrder } from '@/utils/seedUtils';
+import { hashCardOrder } from '@/utils/seedUtils';
 
 interface DeckInputFormProps {
   onDeckInput: (url: string) => Promise<void>;
@@ -29,17 +29,6 @@ export const DeckInputForm: React.FC<DeckInputFormProps> = ({ onDeckInput, onLoa
     }
   }, [parsedDeckList]);
 
-  /**
-   * Handles copying the seed to clipboard
-   */
-  const handleCopySeed = async (): Promise<void> => {
-    try {
-      await copyToClipboard(generatedSeed);
-      // Could add a toast notification here
-    } catch (error) {
-      console.error('Failed to copy seed:', error);
-    }
-  };
 
   /**
    * Handles loading a seed
@@ -146,25 +135,6 @@ export const DeckInputForm: React.FC<DeckInputFormProps> = ({ onDeckInput, onLoa
             <p className="text-green-600">Ready to configure draft settings below!</p>
           </div>
           
-          {/* Seed Display */}
-          {generatedSeed && (
-            <div className="mt-4 p-3 bg-gray-100 rounded">
-              <div className="flex items-center justify-between">
-                <div>
-                  <span className="text-sm font-medium text-gray-700">Draft Seed:</span>
-                  <p className="text-xs text-gray-500 mt-1">
-                    Share this seed to recreate the same draft order
-                  </p>
-                </div>
-                <button 
-                  onClick={handleCopySeed}
-                  className="btn btn-sm"
-                >
-                  Copy Seed
-                </button>
-              </div>
-            </div>
-          )}
         </div>
       )}
 

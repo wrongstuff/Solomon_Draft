@@ -209,18 +209,41 @@ const App: React.FC = () => {
         {!gameState.draft ? (
           <div className="space-y-8">
             <div className="grid grid-cols-2 gap-6">
-            <DeckInputForm 
-              onDeckInput={handleDeckInput}
-              onLoadSeed={handleLoadSeed}
-              isLoading={gameState.isLoading}
-              parsedDeckList={parsedDeckList || seededDeckList}
-            />
-            <DraftSettings 
-              onStartDraft={parsedDeckList ? handleStartDraft : handleStartSeededDraftFromList}
-              isLoading={gameState.isLoading}
-              hasDeckList={!!(parsedDeckList || seededDeckList)}
-              parsedDeckList={parsedDeckList || seededDeckList}
-            />
+              {/* Left Column - Placeholder */}
+              <div className="card">
+                <h2 className="text-xl font-bold mb-4">Coming Soon</h2>
+                <div className="space-y-4">
+                  <p className="text-gray-600">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor 
+                    incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud 
+                    exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                  </p>
+                  <p className="text-gray-600">
+                    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
+                    fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in 
+                    culpa qui officia deserunt mollit anim id est laborum.
+                  </p>
+                </div>
+              </div>
+
+              {/* Right Column - All Input and Settings */}
+              <div className="space-y-6">
+                {/* Deck List Input */}
+                <DeckInputForm 
+                  onDeckInput={handleDeckInput}
+                  onLoadSeed={handleLoadSeed}
+                  isLoading={gameState.isLoading}
+                  parsedDeckList={parsedDeckList || seededDeckList}
+                />
+                
+                {/* Draft Settings */}
+                <DraftSettings 
+                  onStartDraft={parsedDeckList ? handleStartDraft : handleStartSeededDraftFromList}
+                  isLoading={gameState.isLoading}
+                  hasDeckList={!!(parsedDeckList || seededDeckList)}
+                  parsedDeckList={parsedDeckList || seededDeckList}
+                />
+              </div>
             </div>
           </div>
         ) : (
