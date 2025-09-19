@@ -10,6 +10,7 @@ class ScryfallService {
   private isProcessing = false;
   private lastRequestTime = 0;
   private readonly minRequestInterval = 100; // 100ms between requests (10 requests per second max)
+  private splitCardMap = new Map<string, string>(); // Maps processed split card names back to original
 
   /**
    * Processes the request queue with rate limiting to respect Scryfall's API guidelines
@@ -144,6 +145,8 @@ class ScryfallService {
    */
   private preprocessCardNames(cardNames: string[]): string[] {
     const processedNames: string[] = [];
+    const splitCardMap = new Map<string, string>(); // Maps processed names back to original
+    const seenNames = new Set<string>(); // Track seen names to avoid duplicates
     
     for (const name of cardNames) {
       // Handle split cards like "Find // Finality" by trying both halves
@@ -151,15 +154,36 @@ class ScryfallService {
         const halves = name.split(' // ');
         if (halves.length === 2) {
           // Try both halves, Scryfall will return the full split card
-          processedNames.push(halves[0].trim());
-          processedNames.push(halves[1].trim());
+          const firstHalf = halves[0].trim();
+          const secondHalf = halves[1].trim();
+          
+          if (!seenNames.has(firstHalf)) {
+            processedNames.push(firstHalf);
+            seenNames.add(firstHalf);
+            splitCardMap.set(firstHalf, name);
+          }
+          
+          if (!seenNames.has(secondHalf)) {
+            processedNames.push(secondHalf);
+            seenNames.add(secondHalf);
+            splitCardMap.set(secondHalf, name);
+          }
         } else {
-          processedNames.push(name);
+          if (!seenNames.has(name)) {
+            processedNames.push(name);
+            seenNames.add(name);
+          }
         }
       } else {
-        processedNames.push(name);
+        if (!seenNames.has(name)) {
+          processedNames.push(name);
+          seenNames.add(name);
+        }
       }
     }
+    
+    // Store the split card mapping for use in matching
+    this.splitCardMap = splitCardMap;
     
     return processedNames;
   }
@@ -335,6 +359,21 @@ class ScryfallService {
               card = cardData;
               console.log(`Found card with split card match: "${entry.name}" -> "${cardName}"`);
               break;
+            }
+          }
+        }
+        
+        // If still not found, try reverse split card matching (for preprocessed split cards)
+        if (!card) {
+          const originalName = this.splitCardMap.get(entry.name);
+          if (originalName) {
+            // This is a preprocessed split card name, look for the full card
+            for (const [cardName, cardData] of cardMap.entries()) {
+              if (cardName.toLowerCase() === originalName.toLowerCase()) {
+                card = cardData;
+                console.log(`Found card with reverse split card match: "${entry.name}" (${originalName}) -> "${cardName}"`);
+                break;
+              }
             }
           }
         }
