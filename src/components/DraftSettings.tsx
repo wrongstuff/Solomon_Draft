@@ -98,13 +98,28 @@ export const DraftSettings: React.FC<DraftSettingsProps> = ({ onStartDraft, isLo
 
         <div className={`border rounded p-4 ${hasEnoughCards ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
           <h3 className={`font-medium mb-2 ${hasEnoughCards ? 'text-green-900' : 'text-red-900'}`}>
-            Draft Configuration
+            {hasDeckList ? '✓ Deck List Loaded Successfully' : 'Draft Configuration'}
           </h3>
           <div className={`text-sm space-y-1 ${hasEnoughCards ? 'text-green-800' : 'text-red-800'}`}>
+            {hasDeckList && (
+              <>
+                <p>• Source: <strong>{parsedDeckList?.type === 'moxfield' ? 'Moxfield' : parsedDeckList?.type === 'cubecobra' ? 'CubeCobra' : 'Seed'}</strong></p>
+                <p>• Total Cards: <strong>{parsedDeckList?.cards.length || 0}</strong></p>
+              </>
+            )}
             <p>• Pack size: <strong>{packSize}</strong> cards</p>
             <p>• Total rounds: <strong>{numberOfRounds}</strong></p>
             <p>• Total cards needed: <strong>{totalCardsNeeded}</strong></p>
             <p className="font-medium">{validationMessage}</p>
+            {hasEnoughCards && hasDeckList && (
+              <p className="text-green-600 font-medium">Ready to start your draft!</p>
+            )}
+            {!hasEnoughCards && hasDeckList && (
+              <p className="text-red-600 font-medium">Please load a larger deck list or reduce settings.</p>
+            )}
+            {!hasDeckList && (
+              <p className="text-gray-600 font-medium">Load a deck list to begin drafting.</p>
+            )}
           </div>
         </div>
 

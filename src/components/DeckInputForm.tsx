@@ -126,17 +126,6 @@ export const DeckInputForm: React.FC<DeckInputFormProps> = ({ onDeckInput, onLoa
 
       </form>
 
-      {parsedDeckList && (
-        <div className="mt-6 bg-green-50 border border-green-200 rounded p-4">
-          <h3 className="font-medium text-green-900 mb-2">✓ Deck List Loaded Successfully</h3>
-          <div className="text-sm text-green-800 space-y-1">
-            <p><strong>Source:</strong> {parsedDeckList.type === 'moxfield' ? 'Moxfield' : 'CubeCobra'}</p>
-            <p><strong>Total Cards:</strong> {parsedDeckList.cards.length}</p>
-            <p className="text-green-600">Ready to configure draft settings below!</p>
-          </div>
-          
-        </div>
-      )}
 
       {/* Seed Input Section */}
       <div className="mt-6">
