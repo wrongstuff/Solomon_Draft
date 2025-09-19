@@ -128,17 +128,19 @@ const App: React.FC = () => {
 
         {!gameState.draft ? (
           <div className="space-y-8">
-            <DeckInputForm 
-              onDeckInput={handleDeckInput}
-              isLoading={gameState.isLoading}
-              parsedDeckList={parsedDeckList}
-            />
-            <DraftSettings 
-              onStartDraft={handleStartDraft}
-              isLoading={gameState.isLoading}
-              hasDeckList={!!parsedDeckList}
-              parsedDeckList={parsedDeckList}
-            />
+            <div className="grid grid-cols-2 gap-6">
+              <DeckInputForm 
+                onDeckInput={handleDeckInput}
+                isLoading={gameState.isLoading}
+                parsedDeckList={parsedDeckList}
+              />
+              <DraftSettings 
+                onStartDraft={handleStartDraft}
+                isLoading={gameState.isLoading}
+                hasDeckList={!!parsedDeckList}
+                parsedDeckList={parsedDeckList}
+              />
+            </div>
           </div>
         ) : (
           <div className="space-y-8">
