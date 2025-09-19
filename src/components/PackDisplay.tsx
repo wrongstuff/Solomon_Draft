@@ -116,10 +116,6 @@ export const PackDisplay: React.FC<PackDisplayProps> = ({
                   size="medium"
                   isSelected={true}
                 />
-                {/* Pile indicator */}
-                <div className="absolute top-1 left-1 w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
-                  A
-                </div>
               </div>
             ))}
             {/* Show overflow indicator if more than 6 cards */}
@@ -188,10 +184,6 @@ export const PackDisplay: React.FC<PackDisplayProps> = ({
                   size="medium"
                   isSelected={true}
                 />
-                {/* Pile indicator */}
-                <div className="absolute top-1 left-1 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
-                  B
-                </div>
               </div>
             ))}
             {/* Show overflow indicator if more than 6 cards */}
