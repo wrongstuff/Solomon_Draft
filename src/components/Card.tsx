@@ -56,7 +56,6 @@ export const Card: React.FC<CardProps> = ({
       className={`
         relative cursor-pointer transition-all duration-200 hover:scale-105
         ${sizeClasses[size]}
-        ${isSelected ? 'ring-2 ring-blue-500' : ''}
         ${onClick ? 'hover:shadow-lg' : ''}
       `}
       onClick={handleClick}
