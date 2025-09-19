@@ -106,7 +106,7 @@ export const PlayerPicks: React.FC<PlayerPicksProps> = ({ player, picks, cardSiz
       </div>
 
       {/* Sort Controls */}
-      <div className="mb-4 flex gap-2">
+      <div className="mb-4 flex gap-2" style={{ display: 'none' }}>
         <span className="text-sm text-black">Sort by:</span>
         {(['default', 'cmc', 'alphabetical'] as const).map((sort) => (
           <button
