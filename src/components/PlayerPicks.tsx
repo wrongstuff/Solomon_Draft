@@ -144,7 +144,10 @@ export const PlayerPicks: React.FC<PlayerPicksProps> = ({ player, picks, cardSiz
                 </span>
               </div>
               
-              <div className="grid grid-cols-3 max-w-full" style={{ gap: '0.0625rem 0.25rem' }}>
+              <div className="grid" style={{ 
+                gridTemplateColumns: 'repeat(8, 1fr)', 
+                gap: '0.0625rem 0.25rem' 
+              }}>
                 {sortedCards.map((cardInPool) => (
                   <div key={cardInPool.card.id} className="w-full">
                     <Card
