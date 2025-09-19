@@ -55,7 +55,7 @@ export const Card: React.FC<CardProps> = ({
     <div
       className={`
         relative cursor-pointer transition-all duration-200 hover:scale-105
-        ${sizeClasses[size]}
+        ${sizeClasses}
         ${onClick ? 'hover:shadow-lg' : ''}
       `}
       onClick={handleClick}

@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
 import { PlayerPicks as PlayerPicksType, ColorIdentity } from '@/types/card';
 import { Card } from './Card';
+import { CardSize } from '@/constants/cardDimensions';
 
 interface PlayerPicksProps {
   player: 'P1' | 'P2';
   picks: PlayerPicksType;
+  cardSize?: CardSize;
 }
 
 /**
  * Component for displaying a player's drafted cards organized by color identity
  * Shows cards in columns sorted by color (W, U, B, R, G, C, M) and CMC
  */
-export const PlayerPicks: React.FC<PlayerPicksProps> = ({ player, picks }) => {
+export const PlayerPicks: React.FC<PlayerPicksProps> = ({ player, picks, cardSize = 'large' }) => {
   const [sortOrder, setSortOrder] = useState<'default' | 'cmc' | 'alphabetical'>('default');
 
   /**
@@ -142,13 +144,14 @@ export const PlayerPicks: React.FC<PlayerPicksProps> = ({ player, picks }) => {
                 </span>
               </div>
               
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-3 max-w-full" style={{ gap: '0.0625rem 0.25rem' }}>
                 {sortedCards.map((cardInPool) => (
-                  <Card
-                    key={cardInPool.card.id}
-                    cardInPool={cardInPool}
-                    size="small"
-                  />
+                  <div key={cardInPool.card.id} className="w-full">
+                    <Card
+                      cardInPool={cardInPool}
+                      size={cardSize}
+                    />
+                  </div>
                 ))}
               </div>
             </div>

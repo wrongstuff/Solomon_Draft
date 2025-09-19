@@ -144,11 +144,13 @@ const App: React.FC = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               <PlayerPicks 
                 player="P1" 
-                picks={gameState.draft.p1Picks} 
+                picks={gameState.draft.p1Picks}
+                cardSize="large"
               />
               <PlayerPicks 
                 player="P2" 
-                picks={gameState.draft.p2Picks} 
+                picks={gameState.draft.p2Picks}
+                cardSize="large"
               />
             </div>
             {gameState.draft.isComplete && (
