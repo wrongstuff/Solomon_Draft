@@ -226,23 +226,26 @@ const App: React.FC = () => {
                   
                   <div className="space-y-3 text-lg">
                     <div>
-                      <strong>1. Pack Splitting:</strong> One player splits each pack into two piles. 
-                      They must assign every card to a pile, and each pile must have at least one card.
+                      - The environment is meant to be a subset of an existing cube, though any card list can work. 
+                      You know what cards CAN be in the environment, but not if they will. Just because you see an A doesn't mean you'll see the B
+                      </div>
+                      <div>
+                      - One player splits the pack into two piles. They must assign every card to a pile, and each pile must have at least one card.
                     </div>
                     <div>
-                      <strong>2. Pile Choosing:</strong> The other player chooses which pile to add to their collection. 
+                      - The other player chooses which pile to add to their collection. 
                       The remaining pile goes to the splitter.
                     </div>
                     <div>
-                      <strong>3. Alternating Roles:</strong> Players alternate who splits and who chooses each pack. 
-                      This ensures fairness and prevents one player from always having the advantage.
+                      - Players alternate who splits and who chooses each pack. This continues until all of the rounds are complete. A round consists of two packs.
+
                     </div>
                     <div>
-                      <strong>4. Tension</strong> Do you try to cut your opponent off of something, or to push them into a direction 
-                      so you get what you want?
-                    </div>
+                      <strong> Do you try to cut your opponent off of something, or to push them into a direction 
+                      so you get what you want? </strong>                    
+                      </div>
                     <div>
-                      <strong>5. Commander Limited</strong> This format is designed to be played as commander limited (30 life). 
+                      This format is designed to be played as commander limited (30 life). 
                       Any two monocolored creatures can be used as commanders, however, all cards in your 60 card deck must
                       be playable with those commanders and adhere to their color identity. This constraint is the core of the format, as 
                       just because you drafted cards doesn't mean you can play them. Staying flexible early is important, lots of pivoting
