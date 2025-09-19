@@ -134,24 +134,6 @@ export const DraftInterface: React.FC<DraftInterfaceProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* Draft Seed Display */}
-      <div className="card bg-blue-50 border-blue-200">
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="font-medium text-blue-900 mb-1">Draft Seed</h3>
-            <p className="text-sm text-blue-700">
-              Share this seed to recreate the same draft order
-            </p>
-          </div>
-          <button 
-            onClick={handleCopySeed}
-            className="btn btn-sm btn-primary"
-          >
-            Copy Seed
-          </button>
-        </div>
-      </div>
-
       {/* Draft Status */}
       <div className="card">
         <div className="flex justify-between items-center">
@@ -161,9 +143,17 @@ export const DraftInterface: React.FC<DraftInterfaceProps> = ({
               Cards remaining in pool: <strong>{draft.cardsInPool.length}</strong>
             </p>
           </div>
-          <button onClick={onReset} className="btn btn-secondary">
-            Reset Draft
-          </button>
+          <div className="flex gap-2">
+            <button 
+              onClick={handleCopySeed}
+              className="btn btn-sm btn-primary"
+            >
+              Copy Seed
+            </button>
+            <button onClick={onReset} className="btn btn-secondary">
+              Reset Draft
+            </button>
+          </div>
         </div>
       </div>
 
